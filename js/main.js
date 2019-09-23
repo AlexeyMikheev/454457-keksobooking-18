@@ -139,7 +139,7 @@ var createOfferCard = function (offer, author, template) {
   //   }
   // }
 
-  mapCard.querySelector('.popup__avatar').src = author.avatar;
+  mapCard.querySelector('.popup__avatar').src = 'img/avatars/user' + author.avatar + '.png';
 
   return mapCard;
 };
