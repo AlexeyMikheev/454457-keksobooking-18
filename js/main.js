@@ -7,6 +7,13 @@ var TYPES = [
   'bungalo'
 ];
 
+var TYPES_ENUM = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
 var TIMES = [
   '12:00',
   '13:00',
@@ -110,9 +117,51 @@ var populatePins = function (values) {
   mapPins.appendChild(fragment);
 };
 
+
+var createOfferCard = function (offer, author, template) {
+  var mapCard = template.content.querySelector('.map__card');
+  // var mapCardPhotos = mapCard.querySelector('.popup__photos');
+  // var mapCardPhoto = mapCardPhotos.querySelector('.popup__photos');
+
+  mapCard.querySelector('.popup__title').textContent = offer.title;
+  mapCard.querySelector('.popup__text--address').textContent = offer.address;
+  mapCard.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
+  mapCard.querySelector('.popup__type').textContent = TYPES_ENUM[offer.type];
+  mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
+  mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
+  mapCard.querySelector('.popup__features').textContent = offer.features;
+  mapCard.querySelector('.popup__description').textContent = offer.description;
+  mapCard.querySelector('.popup__photo').src = offer.photos;
+
+  // for (var i = 0; i < offer.photos.length; i++) {
+  //   mapCardPhoto.src = offer.photos[i];
+  //   if (i > 0) {
+  //     mapCardPhotos.appendChild(mapCardPhoto.cloneNode());
+  //   }
+  // }
+
+  mapCard.querySelector('.popup__avatar').src = author.avatar;
+
+  return mapCard;
+};
+
+var populateOfferCard = function (pin) {
+
+  var map = document.querySelector('.map');
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
+
+  var template = document.querySelector('#card');
+
+  var offerCardTemplate = createOfferCard(pin.offer, pin.author, template.cloneNode(true));
+
+  map.insertBefore(offerCardTemplate, mapFiltersContainer);
+};
+
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
 var pins = getMokePins(ITEMS_COUNT);
 
 populatePins(pins);
+
+populateOfferCard(pins[0]);
