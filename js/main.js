@@ -104,7 +104,6 @@ var createPin = function (obj, template) {
 };
 
 var populatePins = function (values) {
-
   var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#pin');
