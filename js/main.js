@@ -7,11 +7,11 @@ var TYPES = [
   'bungalo'
 ];
 
-var TYPES_ENUM = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
+var Types = {
+  PLACE: 'Дворец',
+  FLAT: 'Квартира',
+  HOUSE: 'Дом',
+  BUNGALO: 'Бунгало'
 };
 
 var TIMES = [
@@ -29,13 +29,13 @@ var FEATURES = [
   'conditioner'
 ];
 
-var FEATURES_ENUM = {
-  wifi: 'wifi',
-  dishwasher: 'dishwasher',
-  parking: 'parking',
-  washer: 'washer',
-  elevator: 'elevator',
-  conditioner: 'conditioner'
+var Features = {
+  WIFI: 'wifi',
+  DISWASHER: 'dishwasher',
+  PARKING: 'parking',
+  WASHER: 'washer',
+  ELEVATOR: 'elevator',
+  CONDITIONER: 'conditioner'
 };
 
 var PHOTOS = [
@@ -134,14 +134,15 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__title').textContent = offer.title;
   mapCard.querySelector('.popup__text--address').textContent = offer.address;
   mapCard.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  mapCard.querySelector('.popup__type').textContent = TYPES_ENUM[offer.type];
+  mapCard.querySelector('.popup__type').textContent = Types[offer.type.toUpperCase()];
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
-  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + FEATURES_ENUM[offer.features] + ')');
+  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Features[offer.features.toUpperCase()] + ')');
   for (var i = popupFeature.length - 1; i >= 0; i--) {
     popupFeature[i].remove();
   }
+
   mapCard.querySelector('.popup__description').textContent = offer.description;
   mapCard.querySelector('.popup__photo').src = offer.photos;
 
