@@ -29,6 +29,15 @@ var FEATURES = [
   'conditioner'
 ];
 
+var FEATURES_ENUM = {
+  wifi: 'wifi',
+  dishwasher: 'dishwasher',
+  parking: 'parking',
+  washer: 'washer',
+  elevator: 'elevator',
+  conditioner: 'conditioner'
+};
+
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
@@ -128,7 +137,11 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__type').textContent = TYPES_ENUM[offer.type];
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
-  mapCard.querySelector('.popup__features').textContent = offer.features;
+  var popupFeatures = mapCard.querySelector('.popup__features');
+  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + FEATURES_ENUM[offer.features] + ')');
+  for (var i = popupFeature.length - 1; i >= 0; i--) {
+    popupFeature[i].remove();
+  }
   mapCard.querySelector('.popup__description').textContent = offer.description;
   mapCard.querySelector('.popup__photo').src = offer.photos;
 
