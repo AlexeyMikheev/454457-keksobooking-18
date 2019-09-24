@@ -158,7 +158,6 @@ var createOfferCard = function (offer, author, template) {
 };
 
 var populateOfferCard = function (pin) {
-
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
 
