@@ -92,13 +92,13 @@ var getRandomItem = function () {
   return item;
 };
 
-// var getMokePins = function (count) {
-//   var items = [];
-//   for (var i = 0; i < count; i++) {
-//     items.push(getRandomItem());
-//   }
-//   return items;
-// };
+var getMokePins = function (count) {
+  var items = [];
+  for (var i = 0; i < count; i++) {
+    items.push(getRandomItem());
+  }
+  return items;
+};
 
 var createPin = function (obj, template) {
   var mapPin = template.content.querySelector('.map__pin');
