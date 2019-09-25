@@ -92,13 +92,13 @@ var getRandomItem = function () {
   return item;
 };
 
-var getMokePins = function (count) {
-  var items = [];
-  for (var i = 0; i < count; i++) {
-    items.push(getRandomItem());
-  }
-  return items;
-};
+// var getMokePins = function (count) {
+//   var items = [];
+//   for (var i = 0; i < count; i++) {
+//     items.push(getRandomItem());
+//   }
+//   return items;
+// };
 
 var createPin = function (obj, template) {
   var mapPin = template.content.querySelector('.map__pin');
@@ -170,10 +170,59 @@ var populateOfferCard = function (pin) {
 };
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var mapPinMain = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var mapFiltersForm = document.querySelector('.map__filters');
 
-var pins = getMokePins(ITEMS_COUNT);
+var addElementsAttribute = function (parent, selector, attrName, value) {
+  var childItems = parent.querySelectorAll(selector);
+  for (var i = 0; i < childItems.length; i++) {
+    childItems[i].setAttribute(attrName, value);
+  }
+};
 
-populatePins(pins);
+var removeElementsAttribute = function (parent, selector, attrName) {
+  var childItems = parent.querySelectorAll(selector);
+  for (var i = 0; i < childItems.length; i++) {
+    childItems[i].removeAttribute(attrName);
+  }
+};
 
-populateOfferCard(pins[0]);
+var enableMap = function () {
+  map.classList.remove('map--faded');
+
+  adForm.classList.remove('ad-form--disabled');
+  removeElementsAttribute(adForm, 'fieldset', 'disabled');
+
+  mapFiltersForm.classList.remove('ad-form--disabled');
+  removeElementsAttribute(mapFiltersForm, 'select', 'disabled');
+  removeElementsAttribute(mapFiltersForm, 'fieldset', 'disabled');
+};
+
+var disableMap = function () {
+  map.classList.add('map--faded');
+
+  adForm.classList.add('ad-form--disabled');
+  var adFormFieldSets = adForm.querySelectorAll('fieldset');
+  addElementsAttribute(adForm, 'fieldset', 'disabled', true);
+
+  mapFiltersForm.classList.add('ad-form--disabled');
+  addElementsAttribute(mapFiltersForm, 'select', 'disabled', true);
+  addElementsAttribute(mapFiltersForm, 'fieldset', 'disabled', true);
+};
+
+var initMapPinMainEvents = function () {
+  mapPinMain.addEventListener('mousedown', enableMap);
+};
+
+disableMap();
+
+initMapPinMainEvents();
+
+// map.classList.remove('map--faded');
+
+// var pins = getMokePins(ITEMS_COUNT);
+
+// populatePins(pins);
+
+// populateOfferCard(pins[0]);
