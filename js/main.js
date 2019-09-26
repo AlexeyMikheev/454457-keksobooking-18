@@ -55,6 +55,8 @@ var LOCATION_MAX = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
+var MAP_PIN_MAIN_AFTER_HEIHT = 22;
+
 var randomInteger = function (min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.abs(Math.round(rand));
@@ -188,6 +190,10 @@ var removeElementsAttribute = function (parent, selector, attrName) {
   }
 };
 
+var setAddress = function (value) {
+  adForm.querySelector('#address').value = value;
+}
+
 var enableMap = function () {
   map.classList.remove('map--faded');
 
@@ -212,7 +218,12 @@ var disableMap = function () {
 };
 
 var initMapPinMainEvents = function () {
-  mapPinMain.addEventListener('mousedown', enableMap);
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
+    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIHT / 2)));
+    setAddress(addressX + ' ' + addressY);
+    enableMap();
+  });
 };
 
 disableMap();
