@@ -277,8 +277,7 @@ var checkAdFormRoomNumberValues = function () {
 
     if (!ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue)) {
       optionCapacityOption.disabled = true;
-    }
-    else {
+    } else {
       optionCapacityOption.disabled = false;
     }
   }
@@ -305,8 +304,7 @@ var validateAdForm = function () {
     if (message !== null) {
       adFormCapacity.setCustomValidity(message);
     }
-  }
-  else {
+  } else {
     adFormCapacity.setCustomValidity('');
   }
 };
