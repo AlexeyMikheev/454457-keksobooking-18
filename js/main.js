@@ -43,20 +43,20 @@ var rooms = {
   TWO: '2',
   THREE: '3',
   ONEHUNDRED: '100'
-}
+};
 
 var capacity = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
   EMPTY: '0'
-}
+};
 
 var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[rooms.ONE] = { valid: [capacity.ONE], invalid: [capacity.TWO, capacity.THREE, capacity.EMPTY] };
-ROOMS_CAPACITY[rooms.TWO] = { valid: [capacity.ONE, capacity.TWO], invalid: [capacity.THREE, capacity.EMPTY] };
-ROOMS_CAPACITY[rooms.THREE] = { valid: [capacity.ONE, capacity.TWO, capacity.THREE], invalid: [capacity.EMPTY] };
-ROOMS_CAPACITY[rooms.ONEHUNDRED] = { valid: [capacity.EMPTY], invalid: [capacity.EMPTY] };
+ROOMS_CAPACITY[rooms.ONE] = [capacity.ONE];
+ROOMS_CAPACITY[rooms.TWO] = [capacity.TWO, capacity.ONE];
+ROOMS_CAPACITY[rooms.THREE] = [capacity.THREE, capacity.TWO, capacity.ONE];
+ROOMS_CAPACITY[rooms.ONEHUNDRED] = [capacity.EMPTY];
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -196,6 +196,7 @@ var mapPinMain = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var adFormCapacity = adForm.querySelector('.ad-form #capacity');
 var adFormRoomNumber = document.querySelector('.ad-form #room_number');
+var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
 var mapFiltersForm = document.querySelector('.map__filters');
 
 var addElementsAttribute = function (parent, selector, attrName, value) {
@@ -214,7 +215,7 @@ var removeElementsAttribute = function (parent, selector, attrName) {
 
 var setAddress = function (value) {
   adForm.querySelector('#address').value = value;
-}
+};
 
 var enableMap = function () {
   map.classList.remove('map--faded');
@@ -231,7 +232,7 @@ var disableMap = function () {
   map.classList.add('map--faded');
 
   adForm.classList.add('ad-form--disabled');
-  var adFormFieldSets = adForm.querySelectorAll('fieldset');
+  // var adFormFieldSets = adForm.querySelectorAll('fieldset');
   addElementsAttribute(adForm, 'fieldset', 'disabled', true);
 
   mapFiltersForm.classList.add('ad-form--disabled');
@@ -248,38 +249,72 @@ var initMapPinMainEvents = function () {
   });
 };
 
+var setAdFormRoomNumberDefault = function () {
+  var roomNumber = adFormRoomNumber.value;
+  var optionCapacityOption = null;
+  var optionCapacityValue = null;
+
+  for (var i = 0; i < adFormCapacityOptions.length; i++) {
+    optionCapacityOption = adFormCapacityOptions[i];
+    optionCapacityValue = optionCapacityOption.value;
+
+    if (optionCapacityValue === ROOMS_CAPACITY[roomNumber][0]) {
+      adFormCapacity.value = optionCapacityValue;
+      optionCapacityOption.selected = true;
+      i = adFormCapacityOptions.length;
+    }
+  }
+};
+
+var checkAdFormRoomNumberValues = function () {
+  var roomNumber = adFormRoomNumber.value;
+  var optionCapacityOption = null;
+  var optionCapacityValue = null;
+
+  for (var i = 0; i < adFormCapacityOptions.length; i++) {
+    optionCapacityOption = adFormCapacityOptions[i];
+    var optionCapacityValue = optionCapacityOption.value;
+
+    if (!ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue)) {
+      optionCapacityOption.disabled = true;
+    }
+    else {
+      optionCapacityOption.disabled = false;
+    }
+  }
+
+  setAdFormRoomNumberDefault();
+};
 
 var initAdFormRoomNumberEvent = function () {
-  adFormRoomNumber.addEventListener('change', function () {
-    console.log(adFormRoomNumber.value);
-  })
-}
+  adFormRoomNumber.addEventListener('change', checkAdFormRoomNumberValues);
+};
 
 var validateAdForm = function () {
-  var capacity = adFormCapacity.value;
-  var room_number = adFormRoomNumber.value;
-  if (!ROOMS_CAPACITY[room_number].valid.includes(capacity)) {
+  var capacityValue = adFormCapacity.value;
+  var roomNumber = adFormRoomNumber.value;
+  if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     var message = null;
-    switch (room_number) {
+    switch (roomNumber) {
       case rooms.ONE: message = 'Выберите не более 1 гостя'; break;
       case rooms.TWO: message = 'Выберите не более 2 гостей'; break;
       case rooms.THREE: message = 'Выберите не более 3 гостей'; break;
       case rooms.ONEHUNDRED: message = 'Выберите не для гостей'; break;
       default: message = 'Неверное колличество гостей';
     }
-    if (message != null) {
+    if (message !== null) {
       adFormCapacity.setCustomValidity(message);
     }
   }
   else {
     adFormCapacity.setCustomValidity('');
   }
-}
+};
 
 var initValidations = function () {
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   adFormSubmit.addEventListener('click', validateAdForm);
-}
+};
 
 disableMap();
 
@@ -289,10 +324,5 @@ initValidations();
 
 initAdFormRoomNumberEvent();
 
-// map.classList.remove('map--faded');
+checkAdFormRoomNumberValues();
 
-// var pins = getMokePins(ITEMS_COUNT);
-
-// populatePins(pins);
-
-// populateOfferCard(pins[0]);
