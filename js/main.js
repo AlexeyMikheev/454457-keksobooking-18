@@ -53,10 +53,10 @@ var capacity = {
 }
 
 var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[rooms.ONE] = [capacity.ONE];
-ROOMS_CAPACITY[rooms.TWO] = [capacity.ONE, capacity.TWO];
-ROOMS_CAPACITY[rooms.THREE] = [capacity.ONE, capacity.TWO, capacity.THREE];
-ROOMS_CAPACITY[rooms.ONEHUNDRED] = [capacity.EMPTY];
+ROOMS_CAPACITY[rooms.ONE] = { valid: [capacity.ONE], invalid: [capacity.TWO, capacity.THREE, capacity.EMPTY] };
+ROOMS_CAPACITY[rooms.TWO] = { valid: [capacity.ONE, capacity.TWO], invalid: [capacity.THREE, capacity.EMPTY] };
+ROOMS_CAPACITY[rooms.THREE] = { valid: [capacity.ONE, capacity.TWO, capacity.THREE], invalid: [capacity.EMPTY] };
+ROOMS_CAPACITY[rooms.ONEHUNDRED] = { valid: [capacity.EMPTY], invalid: [capacity.EMPTY] };
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -248,12 +248,17 @@ var initMapPinMainEvents = function () {
   });
 };
 
-var i = 0;
+
+var initAdFormRoomNumberEvent = function () {
+  adFormRoomNumber.addEventListener('change', function () {
+    console.log(adFormRoomNumber.value);
+  })
+}
 
 var validateAdForm = function () {
   var capacity = adFormCapacity.value;
   var room_number = adFormRoomNumber.value;
-  if (!ROOMS_CAPACITY[room_number].includes(capacity)) {
+  if (!ROOMS_CAPACITY[room_number].valid.includes(capacity)) {
     var message = null;
     switch (room_number) {
       case rooms.ONE: message = 'Выберите не более 1 гостя'; break;
@@ -281,6 +286,8 @@ disableMap();
 initMapPinMainEvents();
 
 initValidations();
+
+initAdFormRoomNumberEvent();
 
 // map.classList.remove('map--faded');
 
