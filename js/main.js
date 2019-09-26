@@ -273,7 +273,7 @@ var checkAdFormRoomNumberValues = function () {
 
   for (var i = 0; i < adFormCapacityOptions.length; i++) {
     optionCapacityOption = adFormCapacityOptions[i];
-    var optionCapacityValue = optionCapacityOption.value;
+    optionCapacityValue = optionCapacityOption.value;
 
     if (!ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue)) {
       optionCapacityOption.disabled = true;
