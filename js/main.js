@@ -248,23 +248,6 @@ var initMapPinMainEvents = function () {
   });
 };
 
-var setAdFormRoomNumberDefault = function () {
-  var roomNumber = adFormRoomNumber.value;
-  var optionCapacityOption = null;
-  var optionCapacityValue = null;
-
-  for (var i = 0; i < adFormCapacityOptions.length; i++) {
-    optionCapacityOption = adFormCapacityOptions[i];
-    optionCapacityValue = optionCapacityOption.value;
-
-    if (optionCapacityValue === ROOMS_CAPACITY[roomNumber][0]) {
-      adFormCapacity.value = optionCapacityValue;
-      optionCapacityOption.selected = true;
-      i = adFormCapacityOptions.length;
-    }
-  }
-};
-
 var checkAdFormRoomNumberValues = function () {
   var roomNumber = adFormRoomNumber.value;
   var optionCapacityOption = null;
@@ -275,8 +258,6 @@ var checkAdFormRoomNumberValues = function () {
     optionCapacityValue = optionCapacityOption.value;
     optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
   }
-
-  setAdFormRoomNumberDefault();
 };
 
 var initAdFormRoomNumberEvent = function () {
