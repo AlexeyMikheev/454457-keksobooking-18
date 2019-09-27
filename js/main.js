@@ -8,10 +8,22 @@ var TYPES = [
 ];
 
 var Types = {
-  PLACE: 'Дворец',
-  FLAT: 'Квартира',
-  HOUSE: 'Дом',
-  BUNGALO: 'Бунгало'
+  PLACE: {
+    test: 'Дворец',
+    value: 'palace'
+  },
+  FLAT: {
+    text: 'Квартира',
+    value: 'flat'
+  },
+  HOUSE: {
+    text: 'Дом',
+    value: 'house'
+  },
+  BUNGALO: {
+    text: 'Бунгало',
+    value: 'bungalo'
+  }
 };
 
 var TIMES = [
@@ -57,6 +69,12 @@ ROOMS_CAPACITY[rooms.ONE] = [capacity.ONE];
 ROOMS_CAPACITY[rooms.TWO] = [capacity.TWO, capacity.ONE];
 ROOMS_CAPACITY[rooms.THREE] = [capacity.THREE, capacity.TWO, capacity.ONE];
 ROOMS_CAPACITY[rooms.ONEHUNDRED] = [capacity.EMPTY];
+
+var MIN_TYPES_PRICE = {};
+MIN_TYPES_PRICE[Types.BUNGALO.value] = 0;
+MIN_TYPES_PRICE[Types.FLAT.value] = 1000;
+MIN_TYPES_PRICE[Types.HOUSE.value] = 5000;
+MIN_TYPES_PRICE[Types.PLACE.value] = 10000;
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -156,7 +174,7 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__title').textContent = offer.title;
   mapCard.querySelector('.popup__text--address').textContent = offer.address;
   mapCard.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  mapCard.querySelector('.popup__type').textContent = Types[offer.type.toUpperCase()];
+  mapCard.querySelector('.popup__type').textContent = Types[offer.type.toUpperCase()].text;
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
@@ -195,6 +213,9 @@ var map = document.querySelector('.map');
 var mapPinMain = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var adFormCapacity = adForm.querySelector('.ad-form #capacity');
+var adFormPrice = adForm.querySelector('.ad-form #price');
+var adFormType = adForm.querySelector('.ad-form #type');
+var adFormTitle = adForm.querySelector('.ad-form #title');
 var adFormRoomNumber = document.querySelector('.ad-form #room_number');
 var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
 var mapFiltersForm = document.querySelector('.map__filters');
@@ -288,9 +309,24 @@ var initAdFormRoomNumberEvent = function () {
   adFormRoomNumber.addEventListener('change', checkAdFormRoomNumberValues);
 };
 
-var validateAdForm = function () {
+var onChangeAdFormType = function () {
+  var typeValue = adFormType.value;
+  adFormPrice.placeholder = MIN_TYPES_PRICE[typeValue];
+};
+
+var initAdFormTypeEvent = function () {
+  adFormType.addEventListener('change', onChangeAdFormType);
+};
+
+var initAdFormEvents = function () {
+  initAdFormRoomNumberEvent();
+  initAdFormTypeEvent();
+};
+
+var validateAdFormCapacity = function () {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
+
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     var message = null;
     switch (roomNumber) {
@@ -308,10 +344,48 @@ var validateAdForm = function () {
   }
 };
 
+var validateAdFormPrice = function () {
+  var typeValue = adFormType.value;
+  var priceValue = +adFormPrice.value;
+  var minPriceValue = MIN_TYPES_PRICE[typeValue];
+
+  var message = '';
+  if (priceValue < minPriceValue) {
+    switch (typeValue) {
+      case Types.BUNGALO.value: message = 'Выберите не менее 0'; break;
+      case Types.FLAT.value: message = 'Выберите не менее 1000'; break;
+      case Types.HOUSE.value: message = 'Выберите не менее 5000'; break;
+      case Types.PLACE.value: message = 'Выберите не менее 10000'; break;
+    }
+  }
+  adFormPrice.setCustomValidity(message);
+};
+
+var validateAdFormTitle = function () {
+  var message = '';
+  if (!adFormTitle.validity.valid) {
+    if (adFormTitle.validity.valueMissing) {
+      message = 'Это поле обязательное';
+    } else if (adFormTitle.validity.tooShort) {
+      message = 'Длинна должна быть не менее 30 символов';
+    } else if (adFormTitle.validity.tooLong) {
+      message = 'Длинна должна быть не более 100 символов';
+    }
+  }
+  adFormTitle.setCustomValidity(message);
+};
+
+var validateAdForm = function () {
+  validateAdFormCapacity();
+  validateAdFormPrice();
+  validateAdFormTitle();
+};
+
 var initValidations = function () {
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   adFormSubmit.addEventListener('click', validateAdForm);
 };
+
 
 var pins = getMokePins(ITEMS_COUNT);
 
@@ -325,7 +399,7 @@ initMapPinMainEvents();
 
 initValidations();
 
-initAdFormRoomNumberEvent();
+initAdFormEvents();
 
 checkAdFormRoomNumberValues();
 
