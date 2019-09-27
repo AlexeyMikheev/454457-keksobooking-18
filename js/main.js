@@ -41,7 +41,7 @@ var FEATURES = [
   'conditioner'
 ];
 
-var Features = {
+var Feature = {
   WIFI: 'wifi',
   DISWASHER: 'dishwasher',
   PARKING: 'parking',
@@ -50,14 +50,14 @@ var Features = {
   CONDITIONER: 'conditioner'
 };
 
-var rooms = {
+var Room = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
   ONEHUNDRED: '100'
 };
 
-var capacity = {
+var Capacity = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
@@ -65,10 +65,10 @@ var capacity = {
 };
 
 var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[rooms.ONE] = [capacity.ONE];
-ROOMS_CAPACITY[rooms.TWO] = [capacity.TWO, capacity.ONE];
-ROOMS_CAPACITY[rooms.THREE] = [capacity.THREE, capacity.TWO, capacity.ONE];
-ROOMS_CAPACITY[rooms.ONEHUNDRED] = [capacity.EMPTY];
+ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
+ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
 
 var MIN_TYPES_PRICE = {};
 MIN_TYPES_PRICE[Types.BUNGALO.value] = 0;
@@ -93,7 +93,7 @@ var LOCATION_MAX = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var MAP_PIN_MAIN_AFTER_HEIHT = 22;
+var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
 
 var randomInteger = function (min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -178,7 +178,7 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
-  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Features[offer.features.toUpperCase()] + ')');
+  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Feature[offer.features.toUpperCase()] + ')');
   for (var i = popupFeature.length - 1; i >= 0; i--) {
     popupFeature[i].remove();
   }
@@ -263,27 +263,10 @@ var disableMap = function () {
 var initMapPinMainEvents = function () {
   mapPinMain.addEventListener('mousedown', function (evt) {
     var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
-    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIHT / 2)));
+    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
     setAddress(addressX + ' ' + addressY);
     enableMap();
   });
-};
-
-var setAdFormRoomNumberDefault = function () {
-  var roomNumber = adFormRoomNumber.value;
-  var optionCapacityOption = null;
-  var optionCapacityValue = null;
-
-  for (var i = 0; i < adFormCapacityOptions.length; i++) {
-    optionCapacityOption = adFormCapacityOptions[i];
-    optionCapacityValue = optionCapacityOption.value;
-
-    if (optionCapacityValue === ROOMS_CAPACITY[roomNumber][0]) {
-      adFormCapacity.value = optionCapacityValue;
-      optionCapacityOption.selected = true;
-      i = adFormCapacityOptions.length;
-    }
-  }
 };
 
 var checkAdFormRoomNumberValues = function () {
@@ -301,8 +284,6 @@ var checkAdFormRoomNumberValues = function () {
       optionCapacityOption.disabled = false;
     }
   }
-
-  setAdFormRoomNumberDefault();
 };
 
 var initAdFormRoomNumberEvent = function () {
@@ -330,10 +311,10 @@ var validateAdFormCapacity = function () {
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     var message = null;
     switch (roomNumber) {
-      case rooms.ONE: message = 'Выберите не более 1 гостя'; break;
-      case rooms.TWO: message = 'Выберите не более 2 гостей'; break;
-      case rooms.THREE: message = 'Выберите не более 3 гостей'; break;
-      case rooms.ONEHUNDRED: message = 'Выберите не для гостей'; break;
+      case Room.ONE: message = 'Выберите не более 1 гостя'; break;
+      case Room.TWO: message = 'Выберите не более 2 гостей'; break;
+      case Room.THREE: message = 'Выберите не более 3 гостей'; break;
+      case Room.ONEHUNDRED: message = 'Выберите не для гостей'; break;
       default: message = 'Неверное колличество гостей';
     }
     if (message !== null) {
@@ -404,4 +385,3 @@ initAdFormEvents();
 checkAdFormRoomNumberValues();
 
 setAdFormRoomNumberDefault();
-
