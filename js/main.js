@@ -267,8 +267,8 @@ var initAdFormRoomNumberEvent = function () {
 var validateAdForm = function (evt) {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
+  var message = '';
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
-    var message = '';
     switch (roomNumber) {
       case Rooms.ONE: message = 'Выберите не более 1 гостя';
         break;
@@ -280,16 +280,18 @@ var validateAdForm = function (evt) {
         break;
       default: message = 'Неверное колличество гостей';
     }
-    adFormCapacity.setCustomValidity(message);
+  }
+  adFormCapacity.setCustomValidity(message);
 
-    if (message !== '') {
-      evt.preventDefault();
-    }
+  if (message !== '') {
+    evt.preventDefault();
   }
 };
 
 var initValidations = function () {
   adForm.addEventListener('submit', validateAdForm);
+  adFormCapacity.addEventListener('change', validateAdForm);
+  adFormRoomNumber.addEventListener('change', validateAdForm);
 };
 
 var pins = getMokePins(ITEMS_COUNT);
