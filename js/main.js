@@ -38,14 +38,14 @@ var Features = {
   CONDITIONER: 'conditioner'
 };
 
-var rooms = {
+var Rooms = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
   ONEHUNDRED: '100'
 };
 
-var capacity = {
+var Capacity = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
@@ -53,10 +53,10 @@ var capacity = {
 };
 
 var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[rooms.ONE] = [capacity.ONE];
-ROOMS_CAPACITY[rooms.TWO] = [capacity.TWO, capacity.ONE];
-ROOMS_CAPACITY[rooms.THREE] = [capacity.THREE, capacity.TWO, capacity.ONE];
-ROOMS_CAPACITY[rooms.ONEHUNDRED] = [capacity.EMPTY];
+ROOMS_CAPACITY[Rooms.ONE] = [Capacity.ONE];
+ROOMS_CAPACITY[Rooms.TWO] = [Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Rooms.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Rooms.ONEHUNDRED] = [Capacity.EMPTY];
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -75,7 +75,7 @@ var LOCATION_MAX = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var MAP_PIN_MAIN_AFTER_HEIHT = 22;
+var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
 
 var randomInteger = function (min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -242,7 +242,7 @@ var disableMap = function () {
 var initMapPinMainEvents = function () {
   mapPinMain.addEventListener('mousedown', function (evt) {
     var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
-    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIHT / 2)));
+    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
     setAddress(addressX + ' ' + addressY);
     enableMap();
   });
@@ -273,12 +273,7 @@ var checkAdFormRoomNumberValues = function () {
   for (var i = 0; i < adFormCapacityOptions.length; i++) {
     optionCapacityOption = adFormCapacityOptions[i];
     optionCapacityValue = optionCapacityOption.value;
-
-    if (!ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue)) {
-      optionCapacityOption.disabled = true;
-    } else {
-      optionCapacityOption.disabled = false;
-    }
+    optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
   }
 
   setAdFormRoomNumberDefault();
@@ -288,29 +283,32 @@ var initAdFormRoomNumberEvent = function () {
   adFormRoomNumber.addEventListener('change', checkAdFormRoomNumberValues);
 };
 
-var validateAdForm = function () {
+var validateAdForm = function (evt) {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
-    var message = null;
+    var message = '';
     switch (roomNumber) {
-      case rooms.ONE: message = 'Выберите не более 1 гостя'; break;
-      case rooms.TWO: message = 'Выберите не более 2 гостей'; break;
-      case rooms.THREE: message = 'Выберите не более 3 гостей'; break;
-      case rooms.ONEHUNDRED: message = 'Выберите не для гостей'; break;
+      case Rooms.ONE: message = 'Выберите не более 1 гостя';
+        break;
+      case Rooms.TWO: message = 'Выберите не более 2 гостей';
+        break;
+      case Rooms.THREE: message = 'Выберите не более 3 гостей';
+        break;
+      case Rooms.ONEHUNDRED: message = 'Выберите не для гостей';
+        break;
       default: message = 'Неверное колличество гостей';
     }
-    if (message !== null) {
-      adFormCapacity.setCustomValidity(message);
+    adFormCapacity.setCustomValidity(message);
+
+    if (message !== '') {
+      evt.preventDefault();
     }
-  } else {
-    adFormCapacity.setCustomValidity('');
   }
 };
 
 var initValidations = function () {
-  var adFormSubmit = adForm.querySelector('.ad-form__submit');
-  adFormSubmit.addEventListener('click', validateAdForm);
+  adForm.addEventListener('submit', validateAdForm);
 };
 
 var pins = getMokePins(ITEMS_COUNT);
@@ -328,4 +326,3 @@ initValidations();
 initAdFormRoomNumberEvent();
 
 checkAdFormRoomNumberValues();
-
