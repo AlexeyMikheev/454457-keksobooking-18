@@ -403,3 +403,5 @@ initAdFormEvents();
 
 checkAdFormRoomNumberValues();
 
+setAdFormRoomNumberDefault();
+
