@@ -29,7 +29,7 @@ var FEATURES = [
   'conditioner'
 ];
 
-var Features = {
+var Feature = {
   WIFI: 'wifi',
   DISWASHER: 'dishwasher',
   PARKING: 'parking',
@@ -38,7 +38,7 @@ var Features = {
   CONDITIONER: 'conditioner'
 };
 
-var Rooms = {
+var Room = {
   ONE: '1',
   TWO: '2',
   THREE: '3',
@@ -53,10 +53,10 @@ var Capacity = {
 };
 
 var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[Rooms.ONE] = [Capacity.ONE];
-ROOMS_CAPACITY[Rooms.TWO] = [Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Rooms.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Rooms.ONEHUNDRED] = [Capacity.EMPTY];
+ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
+ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -160,7 +160,7 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
-  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Features[offer.features.toUpperCase()] + ')');
+  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Feature[offer.features.toUpperCase()] + ')');
   for (var i = popupFeature.length - 1; i >= 0; i--) {
     popupFeature[i].remove();
   }
@@ -270,13 +270,13 @@ var validateAdForm = function (evt) {
   var message = '';
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     switch (roomNumber) {
-      case Rooms.ONE: message = 'Выберите не более 1 гостя';
+      case Room.ONE: message = 'Выберите не более 1 гостя';
         break;
-      case Rooms.TWO: message = 'Выберите не более 2 гостей';
+      case Room.TWO: message = 'Выберите не более 2 гостей';
         break;
-      case Rooms.THREE: message = 'Выберите не более 3 гостей';
+      case Room.THREE: message = 'Выберите не более 3 гостей';
         break;
-      case Rooms.ONEHUNDRED: message = 'Выберите не для гостей';
+      case Room.ONEHUNDRED: message = 'Выберите не для гостей';
         break;
       default: message = 'Неверное колличество гостей';
     }
