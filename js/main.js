@@ -232,7 +232,6 @@ var disableMap = function () {
   map.classList.add('map--faded');
 
   adForm.classList.add('ad-form--disabled');
-  // var adFormFieldSets = adForm.querySelectorAll('fieldset');
   addElementsAttribute(adForm, 'fieldset', 'disabled', true);
 
   mapFiltersForm.classList.add('ad-form--disabled');
@@ -313,6 +312,12 @@ var initValidations = function () {
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
   adFormSubmit.addEventListener('click', validateAdForm);
 };
+
+var pins = getMokePins(ITEMS_COUNT);
+
+populatePins(pins);
+
+populateOfferCard(pins[0]);
 
 disableMap();
 
