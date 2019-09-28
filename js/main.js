@@ -52,11 +52,12 @@ var Capacity = {
   EMPTY: '0'
 };
 
-var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
-ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
+var ROOMS_CAPACITY = {
+  [Room.ONE]: [Capacity.ONE],
+  [Room.TWO]: [Capacity.TWO, Capacity.ONE],
+  [Room.THREE]: [Capacity.THREE, Capacity.TWO, Capacity.ONE],
+  [Room.ONEHUNDRED]: [Capacity.EMPTY]
+};
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -268,6 +269,7 @@ var validateAdForm = function (evt) {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
   var message = '';
+
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     switch (roomNumber) {
       case Room.ONE: message = 'Выберите не более 1 гостя';
@@ -278,6 +280,7 @@ var validateAdForm = function (evt) {
         break;
       case Room.ONEHUNDRED: message = 'Выберите не для гостей';
         break;
+
       default: message = 'Неверное колличество гостей';
     }
   }
