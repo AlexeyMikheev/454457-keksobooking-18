@@ -52,12 +52,11 @@ var Capacity = {
   EMPTY: '0'
 };
 
-var ROOMS_CAPACITY = {
-  [Room.ONE]: [Capacity.ONE],
-  [Room.TWO]: [Capacity.TWO, Capacity.ONE],
-  [Room.THREE]: [Capacity.THREE, Capacity.TWO, Capacity.ONE],
-  [Room.ONEHUNDRED]: [Capacity.EMPTY]
-};
+var ROOMS_CAPACITY = {};
+ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
+ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
