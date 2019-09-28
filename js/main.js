@@ -260,11 +260,7 @@ var checkAdFormRoomNumberValues = function () {
   }
 };
 
-var initAdFormRoomNumberEvent = function () {
-  adFormRoomNumber.addEventListener('change', checkAdFormRoomNumberValues);
-};
-
-var validateAdForm = function (evt) {
+var validateaAFormCapacity = function (evt) {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
   var message = '';
@@ -283,17 +279,35 @@ var validateAdForm = function (evt) {
       default: message = 'Неверное колличество гостей';
     }
   }
-  adFormCapacity.setCustomValidity(message);
 
-  if (message !== '') {
+  adFormCapacity.setCustomValidity(message);
+};
+
+var onAdFormSelectChange = function (evt) {
+  if (evt.target.id == adFormRoomNumber.id) {
+    checkAdFormRoomNumberValues();
+    validateaAFormCapacity();
+  } else if (evt.target.id == adFormCapacity.id) {
+    validateaAFormCapacity();
+  }
+};
+
+var isAdFormValid = function () {
+  return adFormCapacity.validity.valid &&
+    adFormCapacity.validity.valid;
+}
+
+var onAdFormSubmit = function (evt) {
+  validateaAFormCapacity();
+  if (!isAdFormValid()) {
     evt.preventDefault();
   }
 };
 
 var initValidations = function () {
-  adForm.addEventListener('submit', validateAdForm);
-  adFormCapacity.addEventListener('change', validateAdForm);
-  adFormRoomNumber.addEventListener('change', validateAdForm);
+  adForm.addEventListener('submit', onAdFormSubmit);
+  adForm.addEventListener('change', onAdFormSelectChange, true);
+  validateaAFormCapacity();
 };
 
 var pins = getMokePins(ITEMS_COUNT);
@@ -307,7 +321,5 @@ disableMap();
 initMapPinMainEvents();
 
 initValidations();
-
-initAdFormRoomNumberEvent();
 
 checkAdFormRoomNumberValues();
