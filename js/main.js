@@ -260,7 +260,7 @@ var checkAdFormRoomNumberValues = function () {
   }
 };
 
-var validateaAFormCapacity = function (evt) {
+var validateaAFormCapacity = function () {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
   var message = '';
@@ -284,10 +284,10 @@ var validateaAFormCapacity = function (evt) {
 };
 
 var onAdFormSelectChange = function (evt) {
-  if (evt.target.id == adFormRoomNumber.id) {
+  if (evt.target.id === adFormRoomNumber.id) {
     checkAdFormRoomNumberValues();
     validateaAFormCapacity();
-  } else if (evt.target.id == adFormCapacity.id) {
+  } else if (evt.target.id === adFormCapacity.id) {
     validateaAFormCapacity();
   }
 };
@@ -295,7 +295,7 @@ var onAdFormSelectChange = function (evt) {
 var isAdFormValid = function () {
   return adFormCapacity.validity.valid &&
     adFormCapacity.validity.valid;
-}
+};
 
 var onAdFormSubmit = function (evt) {
   validateaAFormCapacity();
