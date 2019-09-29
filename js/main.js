@@ -29,7 +29,7 @@ var FEATURES = [
   'conditioner'
 ];
 
-var Features = {
+var Feature = {
   WIFI: 'wifi',
   DISWASHER: 'dishwasher',
   PARKING: 'parking',
@@ -37,6 +37,26 @@ var Features = {
   ELEVATOR: 'elevator',
   CONDITIONER: 'conditioner'
 };
+
+var Room = {
+  ONE: '1',
+  TWO: '2',
+  THREE: '3',
+  ONEHUNDRED: '100'
+};
+
+var Capacity = {
+  ONE: '1',
+  TWO: '2',
+  THREE: '3',
+  EMPTY: '0'
+};
+
+var ROOMS_CAPACITY = {};
+ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
+ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -54,6 +74,8 @@ var LOCATION_MAX = 630;
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+
+var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
 
 var randomInteger = function (min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -138,7 +160,7 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
-  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Features[offer.features.toUpperCase()] + ')');
+  var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + Feature[offer.features.toUpperCase()] + ')');
   for (var i = popupFeature.length - 1; i >= 0; i--) {
     popupFeature[i].remove();
   }
@@ -170,10 +192,125 @@ var populateOfferCard = function (pin) {
 };
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var mapPinMain = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var adFormCapacity = adForm.querySelector('.ad-form #capacity');
+var adFormRoomNumber = document.querySelector('.ad-form #room_number');
+var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
+var mapFiltersForm = document.querySelector('.map__filters');
+
+var addElementsAttribute = function (parent, selector, attrName, value) {
+  var childItems = parent.querySelectorAll(selector);
+  for (var i = 0; i < childItems.length; i++) {
+    childItems[i].setAttribute(attrName, value);
+  }
+};
+
+var removeElementsAttribute = function (parent, selector, attrName) {
+  var childItems = parent.querySelectorAll(selector);
+  for (var i = 0; i < childItems.length; i++) {
+    childItems[i].removeAttribute(attrName);
+  }
+};
+
+var enableMap = function () {
+  map.classList.remove('map--faded');
+
+  adForm.classList.remove('ad-form--disabled');
+  removeElementsAttribute(adForm, 'fieldset', 'disabled');
+
+  mapFiltersForm.classList.remove('ad-form--disabled');
+  removeElementsAttribute(mapFiltersForm, 'select', 'disabled');
+  removeElementsAttribute(mapFiltersForm, 'fieldset', 'disabled');
+};
+
+var disableMap = function () {
+  map.classList.add('map--faded');
+
+  adForm.classList.add('ad-form--disabled');
+  addElementsAttribute(adForm, 'fieldset', 'disabled', true);
+
+  mapFiltersForm.classList.add('ad-form--disabled');
+  addElementsAttribute(mapFiltersForm, 'select', 'disabled', true);
+  addElementsAttribute(mapFiltersForm, 'fieldset', 'disabled', true);
+};
+
+var initMapPinMainEvents = function () {
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
+    var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
+    adForm.querySelector('#address').value = addressX + ' ' + addressY;
+    enableMap();
+  });
+};
+
+var checkAdFormRoomNumberValues = function () {
+  var roomNumber = adFormRoomNumber.value;
+  var optionCapacityOption = null;
+  var optionCapacityValue = null;
+
+  for (var i = 0; i < adFormCapacityOptions.length; i++) {
+    optionCapacityOption = adFormCapacityOptions[i];
+    optionCapacityValue = optionCapacityOption.value;
+    optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
+  }
+};
+
+var validateaAFormCapacity = function () {
+  var capacityValue = adFormCapacity.value;
+  var roomNumber = adFormRoomNumber.value;
+  var message = '';
+
+  if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
+    switch (roomNumber) {
+      case Room.ONE: message = 'Выберите не более 1 гостя';
+        break;
+      case Room.TWO: message = 'Выберите не более 2 гостей';
+        break;
+      case Room.THREE: message = 'Выберите не более 3 гостей';
+        break;
+      case Room.ONEHUNDRED: message = 'Выберите не для гостей';
+        break;
+
+      default: message = 'Неверное колличество гостей';
+    }
+  }
+
+  adFormCapacity.setCustomValidity(message);
+};
+
+var onAdFormSelectChange = function (evt) {
+  if (evt.target.id === adFormRoomNumber.id) {
+    checkAdFormRoomNumberValues();
+    validateaAFormCapacity();
+  } else if (evt.target.id === adFormCapacity.id) {
+    validateaAFormCapacity();
+  }
+};
+
+var onAdFormSubmit = function (evt) {
+  validateaAFormCapacity();
+  if (!adForm.checkValidity()) {
+    evt.preventDefault();
+  }
+};
+
+var initValidations = function () {
+  adForm.addEventListener('submit', onAdFormSubmit);
+  adForm.addEventListener('change', onAdFormSelectChange, true);
+  validateaAFormCapacity();
+};
 
 var pins = getMokePins(ITEMS_COUNT);
 
 populatePins(pins);
 
 populateOfferCard(pins[0]);
+
+disableMap();
+
+initMapPinMainEvents();
+
+initValidations();
+
+checkAdFormRoomNumberValues();
