@@ -174,7 +174,7 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__title').textContent = offer.title;
   mapCard.querySelector('.popup__text--address').textContent = offer.address;
   mapCard.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  mapCard.querySelector('.popup__type').textContent = Types[offer.type.toUpperCase()].text;
+  mapCard.querySelector('.popup__type').textContent = Types[offer.type.toUpperCase()];
   mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
   var popupFeatures = mapCard.querySelector('.popup__features');
@@ -213,9 +213,9 @@ var map = document.querySelector('.map');
 var mapPinMain = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var adFormCapacity = adForm.querySelector('.ad-form #capacity');
-var adFormPrice = adForm.querySelector('.ad-form #price');
-var adFormType = adForm.querySelector('.ad-form #type');
 var adFormTitle = adForm.querySelector('.ad-form #title');
+var adFormType = adForm.querySelector('.ad-form #type');
+var adFormPrice = adForm.querySelector('.ad-form #price');
 var adFormRoomNumber = document.querySelector('.ad-form #room_number');
 var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
 var mapFiltersForm = document.querySelector('.map__filters');
@@ -232,10 +232,6 @@ var removeElementsAttribute = function (parent, selector, attrName) {
   for (var i = 0; i < childItems.length; i++) {
     childItems[i].removeAttribute(attrName);
   }
-};
-
-var setAddress = function (value) {
-  adForm.querySelector('#address').value = value;
 };
 
 var enableMap = function () {
@@ -264,7 +260,7 @@ var initMapPinMainEvents = function () {
   mapPinMain.addEventListener('mousedown', function (evt) {
     var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
     var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
-    setAddress(addressX + ' ' + addressY);
+    adForm.querySelector('#address').value = addressX + ' ' + addressY;
     enableMap();
   });
 };
@@ -277,53 +273,32 @@ var checkAdFormRoomNumberValues = function () {
   for (var i = 0; i < adFormCapacityOptions.length; i++) {
     optionCapacityOption = adFormCapacityOptions[i];
     optionCapacityValue = optionCapacityOption.value;
-
-    if (!ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue)) {
-      optionCapacityOption.disabled = true;
-    } else {
-      optionCapacityOption.disabled = false;
-    }
+    optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
   }
 };
 
-var initAdFormRoomNumberEvent = function () {
-  adFormRoomNumber.addEventListener('change', checkAdFormRoomNumberValues);
-};
-
-var onChangeAdFormType = function () {
-  var typeValue = adFormType.value;
-  adFormPrice.placeholder = MIN_TYPES_PRICE[typeValue];
-};
-
-var initAdFormTypeEvent = function () {
-  adFormType.addEventListener('change', onChangeAdFormType);
-};
-
-var initAdFormEvents = function () {
-  initAdFormRoomNumberEvent();
-  initAdFormTypeEvent();
-};
-
-var validateAdFormCapacity = function () {
+var validateaAFormCapacity = function () {
   var capacityValue = adFormCapacity.value;
   var roomNumber = adFormRoomNumber.value;
+  var message = '';
 
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
-    var message = null;
     switch (roomNumber) {
-      case Room.ONE: message = 'Выберите не более 1 гостя'; break;
-      case Room.TWO: message = 'Выберите не более 2 гостей'; break;
-      case Room.THREE: message = 'Выберите не более 3 гостей'; break;
-      case Room.ONEHUNDRED: message = 'Выберите не для гостей'; break;
+      case Room.ONE: message = 'Выберите не более 1 гостя';
+        break;
+      case Room.TWO: message = 'Выберите не более 2 гостей';
+        break;
+      case Room.THREE: message = 'Выберите не более 3 гостей';
+        break;
+      case Room.ONEHUNDRED: message = 'Выберите не для гостей';
+        break;
+
       default: message = 'Неверное колличество гостей';
     }
-    if (message !== null) {
-      adFormCapacity.setCustomValidity(message);
-    }
-  } else {
-    adFormCapacity.setCustomValidity('');
   }
+  adFormCapacity.setCustomValidity(message);
 };
+
 
 var validateAdFormPrice = function () {
   var typeValue = adFormType.value;
@@ -356,17 +331,42 @@ var validateAdFormTitle = function () {
   adFormTitle.setCustomValidity(message);
 };
 
-var validateAdForm = function () {
-  validateAdFormCapacity();
-  validateAdFormPrice();
-  validateAdFormTitle();
+var onAdFormSelectInput = function (evt) {
+  if (evt.target.id === adFormTitle.id) {
+    validateAdFormTitle();
+  } else if (evt.target.id === adFormPrice.id) {
+    validateAdFormPrice();
+  }
+};
+
+var onAdFormSelectChange = function (evt) {
+  if (evt.target.id === adFormType.id) {
+    validateAdFormPrice();
+  } else if (evt.target.id === adFormRoomNumber.id) {
+    checkAdFormRoomNumberValues();
+    validateaAFormCapacity();
+  } else if (evt.target.id === adFormCapacity.id) {
+    validateaAFormCapacity();
+  }
+};
+
+var onAdFormSubmit = function (evt) {
+  validateaAFormCapacity();
+  if (!adForm.checkValidity()) {
+    evt.preventDefault();
+  }
 };
 
 var initValidations = function () {
-  var adFormSubmit = adForm.querySelector('.ad-form__submit');
-  adFormSubmit.addEventListener('click', validateAdForm);
+  adForm.addEventListener('submit', onAdFormSubmit);
+  adForm.addEventListener('change', function (evt) {
+    onAdFormSelectChange(evt);
+  }, true);
+  adForm.addEventListener('input', function (evt) {
+    onAdFormSelectInput(evt);
+  }, true);
+  validateaAFormCapacity();
 };
-
 
 var pins = getMokePins(ITEMS_COUNT);
 
@@ -380,8 +380,4 @@ initMapPinMainEvents();
 
 initValidations();
 
-initAdFormEvents();
-
 checkAdFormRoomNumberValues();
-
-setAdFormRoomNumberDefault();
