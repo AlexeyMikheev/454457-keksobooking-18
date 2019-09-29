@@ -213,10 +213,6 @@ var removeElementsAttribute = function (parent, selector, attrName) {
   }
 };
 
-var setAddress = function (value) {
-  adForm.querySelector('#address').value = value;
-};
-
 var enableMap = function () {
   map.classList.remove('map--faded');
 
@@ -243,7 +239,7 @@ var initMapPinMainEvents = function () {
   mapPinMain.addEventListener('mousedown', function (evt) {
     var addressX = Math.round(evt.currentTarget.offsetLeft + (evt.currentTarget.offsetWidth / 2));
     var addressY = Math.round(evt.currentTarget.offsetTop + (evt.currentTarget.offsetHeight + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
-    setAddress(addressX + ' ' + addressY);
+    adForm.querySelector('#address').value = addressX + ' ' + addressY;
     enableMap();
   });
 };
@@ -292,14 +288,9 @@ var onAdFormSelectChange = function (evt) {
   }
 };
 
-var isAdFormValid = function () {
-  return adFormCapacity.validity.valid &&
-    adFormCapacity.validity.valid;
-};
-
 var onAdFormSubmit = function (evt) {
   validateaAFormCapacity();
-  if (!isAdFormValid()) {
+  if (!adForm.checkValidity()) {
     evt.preventDefault();
   }
 };
