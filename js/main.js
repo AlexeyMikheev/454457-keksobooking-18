@@ -216,6 +216,8 @@ var adFormCapacity = adForm.querySelector('.ad-form #capacity');
 var adFormTitle = adForm.querySelector('.ad-form #title');
 var adFormType = adForm.querySelector('.ad-form #type');
 var adFormPrice = adForm.querySelector('.ad-form #price');
+var adFormTimeIn = adForm.querySelector('.ad-form #timein');
+var adFormTimeOut = adForm.querySelector('.ad-form #timeout');
 var adFormRoomNumber = document.querySelector('.ad-form #room_number');
 var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
 var mapFiltersForm = document.querySelector('.map__filters');
@@ -263,6 +265,21 @@ var initMapPinMainEvents = function () {
     adForm.querySelector('#address').value = addressX + ' ' + addressY;
     enableMap();
   });
+};
+
+
+var validateAdFormTitle = function () {
+  var message = '';
+  if (!adFormTitle.validity.valid) {
+    if (adFormTitle.validity.valueMissing) {
+      message = 'Это поле обязательное';
+    } else if (adFormTitle.validity.tooShort) {
+      message = 'Длинна должна быть не менее 30 символов';
+    } else if (adFormTitle.validity.tooLong) {
+      message = 'Длинна должна быть не более 100 символов';
+    }
+  }
+  adFormTitle.setCustomValidity(message);
 };
 
 var checkAdFormRoomNumberValues = function () {
@@ -317,18 +334,12 @@ var validateAdFormPrice = function () {
   adFormPrice.setCustomValidity(message);
 };
 
-var validateAdFormTitle = function () {
-  var message = '';
-  if (!adFormTitle.validity.valid) {
-    if (adFormTitle.validity.valueMissing) {
-      message = 'Это поле обязательное';
-    } else if (adFormTitle.validity.tooShort) {
-      message = 'Длинна должна быть не менее 30 символов';
-    } else if (adFormTitle.validity.tooLong) {
-      message = 'Длинна должна быть не более 100 символов';
-    }
+var checkAdFormTimes = function (target) {
+  if (target.id === adFormTimeIn.id) {
+    adFormTimeOut.value = adFormTimeIn.value;
+  } else if (target.id === adFormTimeOut.id) {
+    adFormTimeIn.value = adFormTimeOut.value;
   }
-  adFormTitle.setCustomValidity(message);
 };
 
 var onAdFormSelectInput = function (evt) {
@@ -348,6 +359,7 @@ var onAdFormSelectChange = function (evt) {
   } else if (evt.target.id === adFormCapacity.id) {
     validateaAFormCapacity();
   }
+  checkAdFormTimes(evt.target);
 };
 
 var onAdFormSubmit = function (evt) {
@@ -381,3 +393,5 @@ initMapPinMainEvents();
 initValidations();
 
 checkAdFormRoomNumberValues();
+
+checkAdFormTimes(adFormTimeIn);
