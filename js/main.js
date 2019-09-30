@@ -277,7 +277,7 @@ var validateAdFormTitle = function () {
     } else if (adFormTitle.validity.tooLong) {
       message = 'Длинна должна быть не более 100 символов';
     }
-     adFormTitle.setCustomValidity(message);
+    adFormTitle.setCustomValidity(message);
   }
 };
 
@@ -285,19 +285,6 @@ var checkAdFormRoomNumberValues = function () {
   var roomNumber = adFormRoomNumber.value;
   var optionCapacityOption = null;
   var optionCapacityValue = null;
-
-  for (var i = 0; i < adFormCapacityOptions.length; i++) {
-    optionCapacityOption = adFormCapacityOptions[i];
-    optionCapacityValue = optionCapacityOption.value;
-    optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
-  }
-  adFormTitle.setCustomValidity(message);
-};
-
-var validateaAFormCapacity = function () {
-  var capacityValue = adFormCapacity.value;
-  var roomNumber = adFormRoomNumber.value;
-  var message = '';
 
   for (var i = 0; i < adFormCapacityOptions.length; i++) {
     optionCapacityOption = adFormCapacityOptions[i];
@@ -327,7 +314,6 @@ var validateaAFormCapacity = function () {
   }
   adFormCapacity.setCustomValidity(message);
 };
-
 
 var validateAdFormPrice = function () {
   var typeValue = adFormType.value;
@@ -363,33 +349,13 @@ var onAdFormSelectInput = function (evt) {
 };
 
 var onAdFormSelectChange = function (evt) {
-  if (evt.target.id === adFormType.id) {
-    validateAdFormPrice();
-  } else if (evt.target.id === adFormRoomNumber.id) {
-  if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
-    switch (roomNumber) {
-      case Room.ONE: message = 'Выберите не более 1 гостя';
-        break;
-      case Room.TWO: message = 'Выберите не более 2 гостей';
-        break;
-      case Room.THREE: message = 'Выберите не более 3 гостей';
-        break;
-      case Room.ONEHUNDRED: message = 'Выберите не для гостей';
-        break;
-
-      default: message = 'Неверное колличество гостей';
-    }
-  }
-
-  adFormCapacity.setCustomValidity(message);
-};
-
-var onAdFormSelectChange = function (evt) {
   if (evt.target.id === adFormRoomNumber.id) {
     checkAdFormRoomNumberValues();
     validateaAFormCapacity();
   } else if (evt.target.id === adFormCapacity.id) {
     validateaAFormCapacity();
+  } else if (evt.target.id === adFormType.id) {
+    validateAdFormPrice();
   }
   checkAdFormTimes(evt.target);
 };
@@ -403,12 +369,7 @@ var onAdFormSubmit = function (evt) {
 
 var initValidations = function () {
   adForm.addEventListener('submit', onAdFormSubmit);
-  adForm.addEventListener('change', function (evt) {
-    onAdFormSelectChange(evt);
-  }, true);
-  adForm.addEventListener('input', function (evt) {
-    onAdFormSelectInput(evt);
-  }, true);
+  adForm.addEventListener('input', onAdFormSelectInput, true);
   adForm.addEventListener('change', onAdFormSelectChange, true);
   validateaAFormCapacity();
 };
