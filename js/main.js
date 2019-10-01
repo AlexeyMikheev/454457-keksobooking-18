@@ -1,16 +1,16 @@
 'use strict';
 
 var TYPES = [
-  'place',
+  'palace',
   'flat',
   'house',
   'bungalo'
 ];
 
 var Types = {
-  PLACE: {
+  PALACE: {
     text: 'Дворец',
-    value: 'place'
+    value: 'palace'
   },
   FLAT: {
     text: 'Квартира',
@@ -66,17 +66,17 @@ var Capacity = {
 
 var ESC_KEY = 27;
 
-var ROOMS_CAPACITY = {};
-ROOMS_CAPACITY[Room.ONE] = [Capacity.ONE];
-ROOMS_CAPACITY[Room.TWO] = [Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
-ROOMS_CAPACITY[Room.ONEHUNDRED] = [Capacity.EMPTY];
+var RoomsCapacity = {};
+RoomsCapacity[Room.ONE] = [Capacity.ONE];
+RoomsCapacity[Room.TWO] = [Capacity.TWO, Capacity.ONE];
+RoomsCapacity[Room.THREE] = [Capacity.THREE, Capacity.TWO, Capacity.ONE];
+RoomsCapacity[Room.ONEHUNDRED] = [Capacity.EMPTY];
 
-var MIN_TYPES_PRICE = {};
-MIN_TYPES_PRICE[Types.BUNGALO.value] = 0;
-MIN_TYPES_PRICE[Types.FLAT.value] = 1000;
-MIN_TYPES_PRICE[Types.HOUSE.value] = 5000;
-MIN_TYPES_PRICE[Types.PLACE.value] = 10000;
+var MinTypesPrices = {};
+MinTypesPrices[Types.BUNGALO.value] = 0;
+MinTypesPrices[Types.FLAT.value] = 1000;
+MinTypesPrices[Types.HOUSE.value] = 5000;
+MinTypesPrices[Types.PALACE.value] = 10000;
 
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -324,7 +324,7 @@ var checkAdFormRoomNumberValues = function () {
   for (var i = 0; i < adFormCapacityOptions.length; i++) {
     optionCapacityOption = adFormCapacityOptions[i];
     optionCapacityValue = optionCapacityOption.value;
-    optionCapacityOption.disabled = !ROOMS_CAPACITY[roomNumber].includes(optionCapacityValue);
+    optionCapacityOption.disabled = !RoomsCapacity[roomNumber].includes(optionCapacityValue);
   }
 };
 
@@ -333,7 +333,7 @@ var validateaAFormCapacity = function () {
   var roomNumber = adFormRoomNumber.value;
   var message = '';
 
-  if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
+  if (!RoomsCapacity[roomNumber].includes(capacityValue)) {
     switch (roomNumber) {
       case
         Room.ONE: message = 'Выберите не более 1 гостя';
@@ -357,7 +357,7 @@ var validateaAFormCapacity = function () {
 var validateAdFormPrice = function () {
   var typeValue = adFormType.value;
   var priceValue = +adFormPrice.value;
-  var minPriceValue = MIN_TYPES_PRICE[typeValue];
+  var minPriceValue = MinTypesPrices[typeValue];
 
   var message = '';
   if (priceValue < minPriceValue) {
@@ -372,7 +372,7 @@ var validateAdFormPrice = function () {
         Types.HOUSE.value: message = 'Выберите не менее 5000';
         break;
       case
-        Types.PLACE.value: message = 'Выберите не менее 10000';
+        Types.PALACE.value: message = 'Выберите не менее 10000';
         break;
     }
   }
@@ -422,8 +422,8 @@ var initValidations = function () {
 };
 
 var initDocumentEvents = function () {
-  document.addEventListener('keydown', function (event) {
-    if (event.keyCode === ESC_KEY && isOfferCardOpened) {
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEY && isOfferCardOpened) {
       hideOfferCard();
     }
   });
