@@ -142,9 +142,20 @@ var getMokePins = function (count) {
   return items;
 };
 
-var addPinClickEvent = function (mapPin, index) {
-  mapPin.addEventListener('click', function () {
-    showOfferCard(pins[index]);
+var addPinClickEvent = function (mapPin) {
+  mapPin.addEventListener('click', function (evt) {
+    var mapPinButton = null;
+
+    if (evt.target.classList.contains('map__pin') && !evt.target.classList.contains('map__pin--main')) {
+      mapPinButton = evt.target;
+    } else if (evt.target.parentElement.classList.contains('map__pin') && !evt.target.parentElement.classList.contains('map__pin--main')) {
+      mapPinButton = evt.target.parentElement;
+    }
+
+    if (mapPinButton !== null && mapPinButton.dataset !== null) {
+      var index = mapPinButton.dataset.index;
+      showOfferCard(pins[index]);
+    }
   });
 };
 
@@ -152,11 +163,13 @@ var createPin = function (obj, index, template) {
   var mapPin = template.content.querySelector('.map__pin');
   mapPin.style.left = obj.location.x - (PIN_WIDTH / 2) + 'px';
   mapPin.style.top = obj.location.y - PIN_HEIGHT + 'px';
+  mapPin.dataset.index = index;
 
   var img = mapPin.querySelector('img');
   img.src = 'img/avatars/user' + obj.author.avatar + '.png';
   img.alt = obj.offer.title;
   img.setAttribute('tabindex', index + 1);
+  img.dataset.index = index;
 
   return mapPin;
 };
@@ -170,17 +183,15 @@ var populatePins = function (values) {
     var pin = createPin(values[i], i, template.cloneNode(true));
 
     fragment.appendChild(pin);
-
-    addPinClickEvent(pin, i);
   }
 
   mapPins.appendChild(fragment);
+
+  addPinClickEvent(mapPins);
 };
 
 var createOfferCard = function (offer, author, template) {
   var mapCard = template.content.querySelector('.map__card');
-  // var mapCardPhotos = mapCard.querySelector('.popup__photos');
-  // var mapCardPhoto = mapCardPhotos.querySelector('.popup__photos');
 
   mapCard.querySelector('.popup__title').textContent = offer.title;
   mapCard.querySelector('.popup__text--address').textContent = offer.address;
@@ -197,17 +208,9 @@ var createOfferCard = function (offer, author, template) {
   mapCard.querySelector('.popup__description').textContent = offer.description;
   mapCard.querySelector('.popup__photo').src = offer.photos;
 
-  // for (var i = 0; i < offer.photos.length; i++) {
-  //   mapCardPhoto.src = offer.photos[i];
-  //   if (i > 0) {
-  //     mapCardPhotos.appendChild(mapCardPhoto.cloneNode());
-  //   }
-  // }
-
   mapCard.querySelector('.popup__close').addEventListener('click', function () {
     hideOfferCard();
   });
-
 
   mapCard.querySelector('.popup__avatar').src = 'img/avatars/user' + author.avatar + '.png';
 
@@ -233,7 +236,6 @@ var mapFiltersForm = document.querySelector('.map__filters');
 var isOfferCardOpened = false;
 
 var showOfferCard = function (pin) {
-
   if (isOfferCardOpened) {
     hideOfferCard();
   }
@@ -333,13 +335,17 @@ var validateaAFormCapacity = function () {
 
   if (!ROOMS_CAPACITY[roomNumber].includes(capacityValue)) {
     switch (roomNumber) {
-      case Room.ONE: message = 'Выберите не более 1 гостя';
+      case
+        Room.ONE: message = 'Выберите не более 1 гостя';
         break;
-      case Room.TWO: message = 'Выберите не более 2 гостей';
+      case
+        Room.TWO: message = 'Выберите не более 2 гостей';
         break;
-      case Room.THREE: message = 'Выберите не более 3 гостей';
+      case
+        Room.THREE: message = 'Выберите не более 3 гостей';
         break;
-      case Room.ONEHUNDRED: message = 'Выберите не для гостей';
+      case
+        Room.ONEHUNDRED: message = 'Выберите не для гостей';
         break;
 
       default: message = 'Неверное колличество гостей';
@@ -356,10 +362,18 @@ var validateAdFormPrice = function () {
   var message = '';
   if (priceValue < minPriceValue) {
     switch (typeValue) {
-      case Types.BUNGALO.value: message = 'Выберите не менее 0'; break;
-      case Types.FLAT.value: message = 'Выберите не менее 1000'; break;
-      case Types.HOUSE.value: message = 'Выберите не менее 5000'; break;
-      case Types.PLACE.value: message = 'Выберите не менее 10000'; break;
+      case
+        Types.BUNGALO.value: message = 'Выберите не менее 0';
+        break;
+      case
+        Types.FLAT.value: message = 'Выберите не менее 1000';
+        break;
+      case
+        Types.HOUSE.value: message = 'Выберите не менее 5000';
+        break;
+      case
+        Types.PLACE.value: message = 'Выберите не менее 10000';
+        break;
     }
   }
   adFormPrice.setCustomValidity(message);
