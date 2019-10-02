@@ -1,6 +1,9 @@
 'use strict';
 
-window.form = (function (dataModule) {
+(function () {
+
+  var dataModule = window.data;
+
   var ROOMS_CAPACITY = {};
   ROOMS_CAPACITY[dataModule.Room.ONE] = [dataModule.Capacity.ONE];
   ROOMS_CAPACITY[dataModule.Room.TWO] = [dataModule.Capacity.TWO, dataModule.Capacity.ONE];
@@ -146,8 +149,8 @@ window.form = (function (dataModule) {
     checkAdFormTimes(adFormTimeIn);
   };
 
-  return {
+  window.form = {
     init: init,
     setAddress: setAddress
   };
-})(window.data);
+})();

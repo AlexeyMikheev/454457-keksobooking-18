@@ -1,6 +1,6 @@
 'use strict';
 
-window.data = (function () {
+(function () {
   var TYPES = [
     'palace',
     'flat',
@@ -123,7 +123,7 @@ window.data = (function () {
     return items;
   };
 
-  return {
+  window.data = {
     Types: TYPES,
     TypesValues: TypesValues,
     Times: TIMES,

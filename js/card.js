@@ -1,6 +1,9 @@
 'use strict';
 
-window.card = (function (dataModule) {
+(function () {
+
+  var dataModule = window.data;
+
   var createOfferCard = function (offer, author, template) {
     var mapCard = template.content.querySelector('.map__card');
 
@@ -34,7 +37,7 @@ window.card = (function (dataModule) {
     map.insertBefore(offerCardTemplate, mapFiltersContainer);
   };
 
-  return {
+  window.card = {
     populateOfferCard: populateOfferCard,
     createOfferCard: createOfferCard
   };

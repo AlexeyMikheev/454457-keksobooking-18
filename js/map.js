@@ -1,6 +1,12 @@
 'use strict';
 
-window.map = (function (dataModule, pinModule, cardModule, formModule) {
+(function () {
+
+  var dataModule = window.data;
+  var pinModule = window.pin;
+  var cardModule = window.card;
+  var formModule = window.form;
+
   var ESC_KEY = 27;
 
   var ITEMS_COUNT = 8;
@@ -135,9 +141,8 @@ window.map = (function (dataModule, pinModule, cardModule, formModule) {
     formModule.init();
   };
 
-  return {
-    init: init
-  };
-})(window.data, window.pin, window.card, window.form);
+  init();
 
-window.map.init();
+})();
+
+
