@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var dataModule = window.data;
   var pinModule = window.pin;
   var cardModule = window.card;

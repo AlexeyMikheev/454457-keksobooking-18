@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var dataModule = window.data;
 
   var createOfferCard = function (offer, author, template) {
