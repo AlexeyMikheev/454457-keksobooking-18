@@ -103,29 +103,39 @@
   };
 
   var checkAdFormTimes = function (target) {
-    if (target.id === adFormTimeIn.id) {
-      adFormTimeOut.value = adFormTimeIn.value;
-    } else if (target.id === adFormTimeOut.id) {
-      adFormTimeIn.value = adFormTimeOut.value;
+    switch (target.id) {
+      case adFormTimeIn.id:
+        adFormTimeOut.value = adFormTimeIn.value;
+        break;
+      case adFormTimeOut.id:
+        adFormTimeIn.value = adFormTimeOut.value;
+        break;
     }
   };
 
   var onAdFormSelectInput = function (evt) {
-    if (evt.target.id === adFormTitle.id) {
-      validateAdFormTitle();
-    } else if (evt.target.id === adFormPrice.id) {
-      validateAdFormPrice();
+    switch (evt.target.id) {
+      case adFormTitle.id:
+        validateAdFormTitle();
+        break;
+      case adFormPrice.id:
+        validateAdFormPrice();
+        break;
     }
   };
 
   var onAdFormSelectChange = function (evt) {
-    if (evt.target.id === adFormType.id) {
-      validateAdFormPrice();
-    } else if (evt.target.id === adFormRoomNumber.id) {
-      checkAdFormRoomNumberValues();
-      validateaAFormCapacity();
-    } else if (evt.target.id === adFormCapacity.id) {
-      validateaAFormCapacity();
+    switch (evt.target.id) {
+      case adFormType.id:
+        validateAdFormPrice();
+        break;
+      case adFormRoomNumber.id:
+        checkAdFormRoomNumberValues();
+        validateaAFormCapacity();
+        break;
+      case adFormCapacity.id:
+        validateaAFormCapacity();
+        break;
     }
     checkAdFormTimes(evt.target);
   };
