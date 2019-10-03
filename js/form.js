@@ -94,7 +94,7 @@
         case dataModule.TypesValues.HOUSE.value:
           message = 'Выберите не менее 5000';
           break;
-        case dataModule.TypesValues.PLACE.value:
+        case dataModule.TypesValues.PALACE.value:
           message = 'Выберите не менее 10000';
           break;
       }
