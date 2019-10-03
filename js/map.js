@@ -23,11 +23,18 @@
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var pinTemplate = document.querySelector('#pin');
 
+  var onOfferCardClose = function () {
+    hideOfferCard();
+  };
+
   var showOfferCard = function (pin) {
     if (isOfferCardOpened) {
       hideOfferCard();
     }
     var offerCardTemplate = cardModule.createOfferCard(pin.offer, pin.author, cardTemplate.cloneNode(true));
+
+    var popupClose = offerCardTemplate.querySelector('.popup__close');
+    popupClose.addEventListener('click', onOfferCardClose);
 
     map.insertBefore(offerCardTemplate, mapFiltersContainer);
 
@@ -68,6 +75,10 @@
   var hideOfferCard = function () {
     var openedCard = map.querySelector('.map__card.popup');
     if (openedCard !== null) {
+      var popupClose = openedCard.querySelector('.popup__close');
+      if (popupClose !== null) {
+        popupClose.removeEventListener('click', onOfferCardClose);
+      }
       openedCard.remove();
       isOfferCardOpened = false;
     }
