@@ -1,16 +1,14 @@
 'use strict';
 
 (function () {
+  var ESC_KEY = 27;
+  var ITEMS_COUNT = 8;
+  var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
+
   var dataModule = window.data;
   var pinModule = window.pin;
   var cardModule = window.card;
   var formModule = window.form;
-
-  var ESC_KEY = 27;
-
-  var ITEMS_COUNT = 8;
-
-  var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
 
   var isOfferCardOpened = false;
 
