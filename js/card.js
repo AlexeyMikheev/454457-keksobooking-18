@@ -18,6 +18,7 @@
     popupFeatures.innerHTML = '';
     if (popupFeature !== null) {
       popupFeatures.appendChild(popupFeature.cloneNode(true));
+      popupFeature = null;
     }
 
     mapCard.querySelector('.popup__description').textContent = offer.description;
