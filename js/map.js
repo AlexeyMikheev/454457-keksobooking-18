@@ -58,18 +58,18 @@
     });
   };
 
-  var populatePins = function (values) {
+  var populatePins = function (pins) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < values.length; i++) {
-      var pin = pinModule.createPin(values[i], i, pinTemplate.cloneNode(true));
+    for (var i = 0; i < pins.length; i++) {
+      var pin = pinModule.createPin(pins[i], i, pinTemplate.cloneNode(true));
 
       fragment.appendChild(pin);
     }
 
     mapPins.appendChild(fragment);
 
-    addPinClickEvent(values);
+    addPinClickEvent(pins);
   };
 
   var hideOfferCard = function () {
