@@ -40,4 +40,4 @@
     populateOfferCard: populateOfferCard,
     createOfferCard: createOfferCard
   };
-})(window.data);
+})();

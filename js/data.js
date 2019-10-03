@@ -78,20 +78,20 @@
   var AVATAR_MAX = 8;
 
 
-  var randomInteger = function (min, max) {
+  var getRandomInteger = function (min, max) {
     var rand = min - 0.5 + Math.random() * (max - min + 1);
     return Math.abs(Math.round(rand));
   };
 
   var getRandomValue = function (values) {
-    var randomIndex = randomInteger(0, values.length - 1);
+    var randomIndex = getRandomInteger(0, values.length - 1);
     return values[randomIndex];
   };
 
   var getRandomItem = function () {
     var item = {
       author: {
-        avatar: '0' + randomInteger(AVATAR_MIN, AVATAR_MAX)
+        avatar: '0' + getRandomInteger(AVATAR_MIN, AVATAR_MAX)
       },
       offer: {
         title: 'Заголовок объявления',
@@ -107,8 +107,8 @@
         photos: getRandomValue(PHOTOS)
       },
       location: {
-        x: randomInteger(LOCATION_MIN, LOCATION_MAX),
-        y: randomInteger(LOCATION_MIN, LOCATION_MAX)
+        x: getRandomInteger(LOCATION_MIN, LOCATION_MAX),
+        y: getRandomInteger(LOCATION_MIN, LOCATION_MAX)
       }
     };
 
