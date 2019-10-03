@@ -12,10 +12,12 @@
     mapCard.querySelector('.popup__type').textContent = dataModule.TypesValues[offer.type.toUpperCase()].text;
     mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
+
     var popupFeatures = mapCard.querySelector('.popup__features');
-    var popupFeature = popupFeatures.querySelectorAll('.popup__feature:not(.popup__feature--' + dataModule.Feature[offer.features.toUpperCase()] + ')');
-    for (var i = popupFeature.length - 1; i >= 0; i--) {
-      popupFeature[i].remove();
+    var popupFeature = popupFeatures.querySelector('.popup__feature.popup__feature--' + dataModule.Feature[offer.features.toUpperCase()]);
+    popupFeatures.innerHTML = '';
+    if (popupFeature !== null) {
+      popupFeatures.appendChild(popupFeature.cloneNode(true));
     }
 
     mapCard.querySelector('.popup__description').textContent = offer.description;
