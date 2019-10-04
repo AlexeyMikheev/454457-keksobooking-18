@@ -11,7 +11,7 @@
     mapPin.dataset.index = index;
 
     var img = mapPin.querySelector('img');
-    img.src = 'img/avatars/user' + pin.author.avatar + '.png';
+    img.src = pin.author.avatar;
     img.alt = pin.offer.title;
     img.setAttribute('tabindex', index + 1);
     img.dataset.index = index;
