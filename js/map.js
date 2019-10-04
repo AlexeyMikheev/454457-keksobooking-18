@@ -62,7 +62,7 @@
           mapPinButton = evt.target.parentElement;
         }
 
-        if (mapPinButton !== null && mapPinButton.dataset !== null) {
+        if (mapPinButton && mapPinButton.dataset) {
           var index = mapPinButton.dataset.index;
           showOfferCard(pins[index]);
         }
@@ -163,6 +163,11 @@
         y: evt.clientY
       };
 
+      var removeMouseEvents = function () {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
 
@@ -185,9 +190,12 @@
 
         if (addressValidate(address)) {
           formModule.setAddress(address.x + ' ' + address.y);
-        } else {
+        }
+        else {
           positionTop = mapPinMain.offsetTop;
           positionLeft = mapPinMain.offsetLeft;
+
+          removeMouseEvents();
         }
 
         mapPinMain.style.top = positionTop + 'px';
@@ -202,8 +210,7 @@
           formModule.setAddress(address.x + ' ' + address.y);
         }
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        removeMouseEvents();
 
       };
       document.addEventListener('mouseup', onMouseUp);
