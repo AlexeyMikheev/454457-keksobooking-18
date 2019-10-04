@@ -198,7 +198,9 @@
         upEvt.preventDefault();
 
         var address = getAddress(mapPinMain.offsetLeft, mapPinMain.offsetTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
-        formModule.setAddress(address.x + ' ' + address.y);
+        if (addressValidate(address)) {
+          formModule.setAddress(address.x + ' ' + address.y);
+        }
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
