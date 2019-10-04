@@ -166,7 +166,7 @@
       var removeMouseEvents = function () {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-      }
+      };
 
       var onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
@@ -190,8 +190,7 @@
 
         if (addressValidate(address)) {
           formModule.setAddress(address.x + ' ' + address.y);
-        }
-        else {
+        } else {
           positionTop = mapPinMain.offsetTop;
           positionLeft = mapPinMain.offsetLeft;
 
