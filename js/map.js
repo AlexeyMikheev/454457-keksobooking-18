@@ -50,7 +50,6 @@
     isOfferCardOpened = true;
   };
 
-
   var addPinClickEvent = function (pins) {
     mapPins.addEventListener('click', function (evt) {
       if (!draggedMapPinButton) {
