@@ -146,7 +146,7 @@
     };
   };
 
-  var isAddressValid = function (address) {
+  var addressValidate = function (address) {
     return address.x >= minMapX && address.x <= maxMapX && address.y >= MIN_ADDRESS_Y && address.y <= MAX_ADDRESS_Y;
   };
 
@@ -183,7 +183,7 @@
 
         var address = getAddress(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
 
-        if (isAddressValid(address)) {
+        if (addressValidate(address)) {
           formModule.setAddress(address.x + ' ' + address.y);
         } else {
           positionTop = mapPinMain.offsetTop;
