@@ -15,11 +15,11 @@
 
     var popupFeatures = mapCard.querySelector('.popup__features');
 
-    for (var i = 0; i < dataModule.FeatureEnum.length; i++) {
-      var feature = dataModule.FeatureEnum[i];
+    for (var i = 0; i < dataModule.Features.length; i++) {
+      var feature = dataModule.Features[i];
       if (!offer.features.includes(feature)) {
         var popupFeature = popupFeatures.querySelector('.popup__feature.popup__feature--' + dataModule.Feature[feature.toUpperCase()]);
-        if (popupFeature !== null) {
+        if (popupFeature) {
           popupFeature.remove();
         }
       }
@@ -32,11 +32,13 @@
     var photoTemplate = photo.cloneNode(true);
     photo.remove();
 
+    var photosFragment = document.createDocumentFragment();
     for (var j = 0; j < offer.photos.length; j++) {
       var newPhoto = photoTemplate.cloneNode(true);
       newPhoto.src = offer.photos[j];
-      photos.appendChild(newPhoto);
+      photosFragment.appendChild(newPhoto);
     }
+    photos.appendChild(photosFragment);
 
     mapCard.querySelector('.popup__avatar').src = author.avatar;
 

@@ -11,7 +11,7 @@
 
     errorButton.addEventListener('click', function (evt) {
       evt.preventDefault();
-      if (errorMessage !== null) {
+      if (errorMessage) {
         errorMessage.remove();
       }
       onCloseCallback();

@@ -130,6 +130,6 @@
     Capacity: Capacity,
     Feature: Feature,
     getMokePins: getMokePins,
-    FeatureEnum: FEATURES
+    Features: FEATURES
   };
 })();
