@@ -14,16 +14,31 @@
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
 
     var popupFeatures = mapCard.querySelector('.popup__features');
-    var popupFeature = popupFeatures.querySelector('.popup__feature.popup__feature--' + dataModule.Feature[offer.features.toUpperCase()]);
-    popupFeatures.innerHTML = '';
-    if (popupFeature !== null) {
-      popupFeatures.appendChild(popupFeature.cloneNode(true));
-      popupFeature = null;
+
+    for (var i = 0; i < dataModule.FeatureEnum.length; i++) {
+      var feature = dataModule.FeatureEnum[i];
+      if (!offer.features.includes(feature)) {
+        var popupFeature = popupFeatures.querySelector('.popup__feature.popup__feature--' + dataModule.Feature[feature.toUpperCase()]);
+        if (popupFeature !== null) {
+          popupFeature.remove();
+        }
+      }
     }
 
     mapCard.querySelector('.popup__description').textContent = offer.description;
-    mapCard.querySelector('.popup__photo').src = offer.photos;
-    mapCard.querySelector('.popup__avatar').src = 'img/avatars/user' + author.avatar + '.png';
+
+    var photos = mapCard.querySelector('.popup__photos');
+    var photo = photos.querySelector('.popup__photo');
+    var photoTemplate = photo.cloneNode(true);
+    photo.remove();
+
+    for (var j = 0; j < offer.photos.length; j++) {
+      var newPhoto = photoTemplate.cloneNode(true);
+      newPhoto.src = offer.photos[j];
+      photos.appendChild(newPhoto);
+    }
+
+    mapCard.querySelector('.popup__avatar').src = author.avatar;
 
     return mapCard;
   };

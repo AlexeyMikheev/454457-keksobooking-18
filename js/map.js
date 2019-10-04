@@ -2,13 +2,12 @@
 
 (function () {
   var ESC_KEY = 27;
-  var ITEMS_COUNT = 8;
   var MAP_PIN_MAIN_AFTER_HEIGHT = 22;
 
   var MIN_ADDRESS_Y = 130;
   var MAX_ADDRESS_Y = 630;
 
-  var dataModule = window.data;
+  var backendModule = window.backend;
   var pinModule = window.pin;
   var cardModule = window.card;
   var formModule = window.form;
@@ -223,10 +222,14 @@
     });
   };
 
-  var init = function () {
-    var pins = dataModule.getMokePins(ITEMS_COUNT);
+  var onError = function (errorMessage) {
+    window.notification(errorMessage, function () {
+      backendModule.load(populatePins, onError);
+    });
+  };
 
-    populatePins(pins);
+  var init = function () {
+    backendModule.load(populatePins, onError);
 
     disableMap();
 
