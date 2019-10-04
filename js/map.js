@@ -195,7 +195,6 @@
 
           removeMouseEvents();
         }
-
         mapPinMain.style.top = positionTop + 'px';
         mapPinMain.style.left = positionLeft + 'px';
       };
