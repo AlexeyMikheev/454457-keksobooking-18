@@ -141,15 +141,7 @@
     checkAdFormTimes(evt.target);
   };
 
-  var onAdFormSubmit = function (evt) {
-    validateaAFormCapacity();
-    if (!adForm.checkValidity()) {
-      evt.preventDefault();
-    }
-  };
-
   var initValidations = function () {
-    adForm.addEventListener('submit', onAdFormSubmit);
     adForm.addEventListener('change', function (evt) {
       onAdFormSelectChange(evt);
     }, true);
@@ -166,7 +158,12 @@
   var initFormEvents = function (onSuccess, onError) {
     adForm.addEventListener('submit', function (evt) {
       evt.preventDefault();
-      backEndModule.save(new FormData(adForm), onSuccess, onError);
+
+      validateaAFormCapacity();
+
+      if (adForm.checkValidity()) {
+        backEndModule.save(new FormData(adForm), onSuccess, onError);
+      }
     });
   };
 

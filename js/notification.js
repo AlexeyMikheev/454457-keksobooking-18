@@ -35,8 +35,7 @@
   var showSuccessMessage = function () {
     successMessage = successTemplate.querySelector('.success').cloneNode(true);
     mainNode.insertAdjacentElement('afterbegin', successMessage);
-    documentClickHandler = document.addEventListener('click', function (evt) {
-      evt.preventDefault();
+    documentClickHandler = document.addEventListener('click', function () {
       if (successMessage) {
         hideSuccessMessage();
       }
