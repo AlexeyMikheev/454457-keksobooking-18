@@ -17,6 +17,10 @@
 
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
+  var mapPinMainDefaultCoords = {
+    positionTop: mapPinMain.offsetTop,
+    positionLeft: mapPinMain.offsetLeft
+  };
   var adForm = document.querySelector('.ad-form');
   var mapFiltersForm = document.querySelector('.map__filters');
   var cardTemplate = document.querySelector('#card');
@@ -158,6 +162,22 @@
     return address.x >= minMapX && address.x <= maxMapX && address.y >= MIN_ADDRESS_Y && address.y <= MAX_ADDRESS_Y;
   };
 
+  var setMapPinMainDefault = function () {
+    if (mapPinMainDefaultCoords) {
+      var positionTop = mapPinMainDefaultCoords.positionTop;
+      var positionLeft = mapPinMainDefaultCoords.positionLeft;
+
+      var address = getAddress(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
+
+      mapPinMain.style.top = positionTop + 'px';
+      mapPinMain.style.left = positionLeft + 'px';
+
+      if (addressValidate(address)) {
+        formModule.setAddress(address.x + ' ' + address.y);
+      }
+    }
+  };
+
   var initMapPinMainEvents = function () {
     mapPinMain.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -245,6 +265,7 @@
     hideOfferCard();
 
     notificationModule.showSuccessMessage();
+    setMapPinMainDefault();
   };
 
   var onSaveFormError = function (errorMessage) {
