@@ -25,6 +25,13 @@
     mainNode.insertAdjacentElement('afterbegin', errorMessage);
   };
 
+  var hideErrorMessage = function () {
+    if (errorMessage) {
+      errorMessage.remove();
+      errorMessage = null;
+    }
+  };
+
   var showSuccessMessage = function () {
     successMessage = successTemplate.querySelector('.success').cloneNode(true);
     mainNode.insertAdjacentElement('afterbegin', successMessage);
@@ -47,6 +54,7 @@
 
   window.notification = {
     showErrorMessage: showErrorMessage,
+    hideErrorMessage: hideErrorMessage,
     showSuccessMessage: showSuccessMessage,
     hideSuccessMessage: hideSuccessMessage
   };

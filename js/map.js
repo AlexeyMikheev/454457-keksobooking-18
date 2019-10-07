@@ -248,6 +248,7 @@
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === ESC_KEY) {
         hideOfferCard();
+        notificationModule.hideErrorMessage();
         notificationModule.hideSuccessMessage();
       }
     });
