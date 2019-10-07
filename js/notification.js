@@ -2,7 +2,10 @@
 
 (function () {
   var errorTemplate = document.querySelector('#error').content;
+  var successTemplate = document.querySelector('#success').content;
   var errorMessage = null;
+  var successMessage = null;
+  var documentClickHandler = null;
   var mainNode = document.querySelector('main');
 
   var showErrorMessage = function (errorMessageText, onCloseCallback) {
@@ -13,11 +16,38 @@
       evt.preventDefault();
       if (errorMessage) {
         errorMessage.remove();
+        errorMessage = null;
       }
-      onCloseCallback();
+      if (onCloseCallback) {
+        onCloseCallback();
+      }
     });
     mainNode.insertAdjacentElement('afterbegin', errorMessage);
   };
 
-  window.notification = showErrorMessage;
+  var showSuccessMessage = function () {
+    successMessage = successTemplate.querySelector('.success').cloneNode(true);
+    mainNode.insertAdjacentElement('afterbegin', successMessage);
+    documentClickHandler = document.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      if (successMessage) {
+        hideSuccessMessage();
+      }
+    });
+  };
+
+  var hideSuccessMessage = function () {
+    if (successMessage) {
+      successMessage.remove();
+      successMessage = null;
+      document.removeEventListener('click', documentClickHandler);
+      documentClickHandler = null;
+    }
+  };
+
+  window.notification = {
+    showErrorMessage: showErrorMessage,
+    showSuccessMessage: showSuccessMessage,
+    hideSuccessMessage: hideSuccessMessage
+  };
 })();

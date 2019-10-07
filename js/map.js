@@ -11,6 +11,7 @@
   var pinModule = window.pin;
   var cardModule = window.card;
   var formModule = window.form;
+  var notificationModule = window.notification;
 
   var isOfferCardOpened = false;
 
@@ -86,14 +87,23 @@
   };
 
   var hideOfferCard = function () {
-    var openedCard = map.querySelector('.map__card.popup');
-    if (openedCard !== null) {
-      var popupClose = openedCard.querySelector('.popup__close');
-      if (popupClose !== null) {
-        popupClose.removeEventListener('click', onOfferCardClose);
+    if (isOfferCardOpened) {
+      var openedCard = map.querySelector('.map__card.popup');
+      if (openedCard !== null) {
+        var popupClose = openedCard.querySelector('.popup__close');
+        if (popupClose !== null) {
+          popupClose.removeEventListener('click', onOfferCardClose);
+        }
+        openedCard.remove();
+        isOfferCardOpened = false;
       }
-      openedCard.remove();
-      isOfferCardOpened = false;
+    }
+  };
+
+  var clearPins = function () {
+    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = pins.length - 1; i >= 0; i--) {
+      pins[i].remove();
     }
   };
 
@@ -216,20 +226,33 @@
 
   var initDocumentEvents = function () {
     document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ESC_KEY && isOfferCardOpened) {
+      if (evt.keyCode === ESC_KEY) {
         hideOfferCard();
+        notificationModule.hideSuccessMessage();
       }
     });
   };
 
-  var onError = function (errorMessage) {
-    window.notification(errorMessage, function () {
-      backendModule.load(populatePins, onError);
+  var onLoadError = function (errorMessage) {
+    notificationModule.showErrorMessage(errorMessage, function () {
+      backendModule.load(populatePins, onLoadError);
     });
   };
 
+  var onSaveFormSuccess = function () {
+    adForm.reset();
+    clearPins();
+    hideOfferCard();
+
+    notificationModule.showSuccessMessage();
+  };
+
+  var onSaveFormError = function (errorMessage) {
+    notificationModule.showErrorMessage(errorMessage);
+  };
+
   var init = function () {
-    backendModule.load(populatePins, onError);
+    backendModule.load(populatePins, onLoadError);
 
     disableMap();
 
@@ -237,8 +260,12 @@
 
     initDocumentEvents();
 
-    formModule.init();
+    formModule.init(onSaveFormSuccess, onSaveFormError);
   };
 
   init();
+
+  window.map = {
+    DisableMap: disableMap
+  };
 })();

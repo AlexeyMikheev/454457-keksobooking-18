@@ -2,6 +2,7 @@
 
 (function () {
   var dataModule = window.data;
+  var backEndModule = window.backend;
 
   var RoomsCapacity = {};
   RoomsCapacity[dataModule.Room.ONE] = [dataModule.Capacity.ONE];
@@ -162,11 +163,19 @@
     adForm.querySelector('#address').value = value;
   };
 
-  var init = function () {
+  var initFormEvents = function (onSuccess, onError) {
+    adForm.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      backEndModule.save(new FormData(adForm), onSuccess, onError);
+    });
+  };
+
+  var init = function (onSaveSuccess, onSaveError) {
     initValidations();
     checkAdFormRoomNumberValues();
     validateAdFormPrice();
     checkAdFormTimes(adFormTimeIn);
+    initFormEvents(onSaveSuccess, onSaveError);
   };
 
   window.form = {
