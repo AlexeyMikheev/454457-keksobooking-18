@@ -93,9 +93,9 @@
   var hideOfferCard = function () {
     if (isOfferCardOpened) {
       var openedCard = map.querySelector('.map__card.popup');
-      if (openedCard !== null) {
+      if (openedCard) {
         var popupClose = openedCard.querySelector('.popup__close');
-        if (popupClose !== null) {
+        if (popupClose) {
           popupClose.removeEventListener('click', onOfferCardClose);
         }
         openedCard.remove();
