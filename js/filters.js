@@ -3,23 +3,21 @@
 (function () {
   var mapFilters = document.querySelector('.map__filters');
   var houseTypeFilter = mapFilters.querySelector('#housing-type');
-  var selectedHouseType = houseTypeFilter.value;
 
-  var addHouseTypeFilterHandler = function (onFilterChangedCallback) {
-    houseTypeFilter.addEventListener('change', function (evt) {
-      selectedHouseType = evt.target.value;
-      if (onFilterChangedCallback) {
-        onFilterChangedCallback();
+  var getHouseType = function () {
+    return houseTypeFilter.value;
+  };
+
+  var init = function (filterChangeCallback) {
+    houseTypeFilter.addEventListener('change', function () {
+      if (filterChangeCallback) {
+        filterChangeCallback();
       }
     });
   };
 
-  var init = function (onFilterChangedCallback) {
-    addHouseTypeFilterHandler(onFilterChangedCallback);
-  };
-
   window.filters = {
     init: init,
-    selectedHouseType: selectedHouseType
+    getHouseType: getHouseType
   };
 })();

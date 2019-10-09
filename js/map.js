@@ -291,7 +291,7 @@
   };
 
   var onFilterChanged = function () {
-    var houseType = filtersModule.selectedHouseType;
+    var houseType = filtersModule.getHouseType();
 
     var filtredPins = mapPinItems.filter(function (pin) {
       return houseType === dataModule.TypesValues.ANY.value ? true : pin.offer.type === houseType;
