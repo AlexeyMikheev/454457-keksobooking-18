@@ -4,6 +4,7 @@
   var ANY_FILTER_VALUE = 'any';
 
   var dataModule = window.data;
+  var debounce = window.debounce;
 
   var mapFilters = document.querySelector('.map__filters');
 
@@ -94,16 +95,25 @@
     }
   };
 
-  var init = function (filterChangeCallback) {
+  var init = function (cb) {
     mapFilters.addEventListener('change', function (evt) {
-      if (evt.target.classList.contains('map__checkbox')) {
-        fillCheckedFeatures();
-      }
+      var args = {
+        target: evt.target,
+        cb: cb
+      };
 
-      if (filterChangeCallback) {
-        filterChangeCallback();
-      }
+      debounce(onMapFiltersChange, args);
     });
+  };
+
+  var onMapFiltersChange = function (args) {
+    if (args.target.classList.contains('map__checkbox')) {
+      fillCheckedFeatures();
+    }
+
+    if (args.cb) {
+      args.cb();
+    }
   };
 
   window.filter = {
