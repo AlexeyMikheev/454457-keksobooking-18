@@ -101,7 +101,7 @@
     clearPins();
 
     var countItems = Math.min(mapFiltredPinItems.length, MAX_PINS_COUNT);
-    if (countItems > 0) {
+    if (countItems) {
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < countItems; i++) {
@@ -295,7 +295,7 @@
     var houseType = filtersModule.getHouseType();
 
     var filtredPins = mapPinItems.filter(function (pin) {
-      return houseType === dataModule.TypesValues.ANY.value ? true : pin.offer.type === houseType;
+      return houseType === dataModule.TypeValue.ANY.value ? true : pin.offer.type === houseType;
     });
 
     mapFiltredPinItems = filtredPins;

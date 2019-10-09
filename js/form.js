@@ -11,10 +11,10 @@
   RoomsCapacity[dataModule.Room.ONEHUNDRED] = [dataModule.Capacity.EMPTY];
 
   var MinTypesPrice = {};
-  MinTypesPrice[dataModule.TypesValues.BUNGALO.value] = 0;
-  MinTypesPrice[dataModule.TypesValues.FLAT.value] = 1000;
-  MinTypesPrice[dataModule.TypesValues.HOUSE.value] = 5000;
-  MinTypesPrice[dataModule.TypesValues.PALACE.value] = 10000;
+  MinTypesPrice[dataModule.TypeValue.BUNGALO.value] = 0;
+  MinTypesPrice[dataModule.TypeValue.FLAT.value] = 1000;
+  MinTypesPrice[dataModule.TypeValue.HOUSE.value] = 5000;
+  MinTypesPrice[dataModule.TypeValue.PALACE.value] = 10000;
 
   var adForm = document.querySelector('.ad-form');
   var adFormCapacity = adForm.querySelector('.ad-form #capacity');
@@ -86,16 +86,16 @@
     var message = '';
     if (priceValue < minPriceValue) {
       switch (typeValue) {
-        case dataModule.TypesValues.BUNGALO.value:
+        case dataModule.TypeValue.BUNGALO.value:
           message = 'Выберите не менее 0';
           break;
-        case dataModule.TypesValues.FLAT.value:
+        case dataModule.TypeValue.FLAT.value:
           message = 'Выберите не менее 1000';
           break;
-        case dataModule.TypesValues.HOUSE.value:
+        case dataModule.TypeValue.HOUSE.value:
           message = 'Выберите не менее 5000';
           break;
-        case dataModule.TypesValues.PALACE.value:
+        case dataModule.TypeValue.PALACE.value:
           message = 'Выберите не менее 10000';
           break;
       }
