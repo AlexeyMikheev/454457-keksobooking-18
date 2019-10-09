@@ -266,7 +266,7 @@
 
   var onLoadError = function (errorMessage) {
     notificationModule.showErrorMessage(errorMessage, function () {
-      backendModule.load(loadPins, onLoadError);
+      loadPins();
     });
   };
 
@@ -286,11 +286,11 @@
   var loadPins = function () {
     backendModule.load(function (items) {
       mapPinItems = items;
-      onFilterChanged();
+      applayFilters();
     }, onLoadError);
   };
 
-  var onFilterChanged = function () {
+  var applayFilters = function () {
     var houseType = filtersModule.getHouseType();
 
     var filtredPins = mapPinItems.filter(function (pin) {
@@ -311,7 +311,7 @@
 
     formModule.init(onSaveFormSuccess, onSaveFormError);
 
-    filtersModule.init(onFilterChanged);
+    filtersModule.init(applayFilters);
   };
 
   init();
