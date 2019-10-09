@@ -44,6 +44,10 @@
   };
 
   var TypesValues = {
+    ANY: {
+      text: 'Любой тип жилья',
+      value: 'any'
+    },
     PALACE: {
       text: 'Дворец',
       value: 'palace'
