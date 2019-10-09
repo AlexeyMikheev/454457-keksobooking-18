@@ -41,6 +41,7 @@
   var draggedMapPinButton = false;
 
   var mapPinItems = [];
+  var mapFiltredPinItems = [];
 
   var onOfferCardClose = function () {
     hideOfferCard();
@@ -74,7 +75,7 @@
     }
   };
 
-  var addPinClickEvent = function (pins) {
+  var addPinClickEvent = function () {
     mapPins.addEventListener('click', function (evt) {
       if (!draggedMapPinButton) {
         var mapPinButton = null;
@@ -87,7 +88,7 @@
 
         if (mapPinButton && mapPinButton.dataset) {
           var index = mapPinButton.dataset.index;
-          showOfferCard(pins[index]);
+          showOfferCard(mapFiltredPinItems[index]);
         }
       } else {
         evt.preventDefault();
@@ -96,14 +97,15 @@
     });
   };
 
-  var renderPins = function (pinItems) {
+  var renderPins = function () {
     clearPins();
-    var countItems = Math.min(pinItems.length, MAX_PINS_COUNT);
+
+    var countItems = Math.min(mapFiltredPinItems.length, MAX_PINS_COUNT);
     if (countItems > 0) {
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < countItems; i++) {
-        var pin = pinModule.createPin(pinItems[i], i, pinTemplate.cloneNode(true));
+        var pin = pinModule.createPin(mapFiltredPinItems[i], i, pinTemplate.cloneNode(true));
 
         fragment.appendChild(pin);
       }
@@ -111,7 +113,6 @@
       mapPins.appendChild(fragment);
     }
 
-    addPinClickEvent(pinItems);
   };
 
   var clearPins = function () {
@@ -297,7 +298,10 @@
       return houseType === dataModule.TypesValues.ANY.value ? true : pin.offer.type === houseType;
     });
 
-    renderPins(filtredPins);
+    mapFiltredPinItems = filtredPins;
+
+    hideOfferCard();
+    renderPins();
   };
 
   var init = function () {
@@ -308,6 +312,8 @@
     initMapPinMainEvents();
 
     initDocumentEvents();
+
+    addPinClickEvent();
 
     formModule.init(onSaveFormSuccess, onSaveFormError);
 
