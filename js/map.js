@@ -286,14 +286,18 @@
   var loadPins = function () {
     backendModule.load(function (items) {
       mapPinItems = items;
-      onFilterTypesChanged(filtersModule.selectedHouseType);
+      onFilterChanged();
     }, onLoadError);
   };
 
-  var onFilterTypesChanged = function (houseType) {
-    renderPins(mapPinItems.filter(function (pin) {
+  var onFilterChanged = function () {
+    var houseType = filtersModule.selectedHouseType;
+
+    var filtredPins = mapPinItems.filter(function (pin) {
       return houseType === dataModule.TypesValues.ANY.value ? true : pin.offer.type === houseType;
-    }));
+    });
+
+    renderPins(filtredPins);
   };
 
   var init = function () {
@@ -306,13 +310,9 @@
     initDocumentEvents();
 
     formModule.init(onSaveFormSuccess, onSaveFormError);
-  };
 
-  window.map = {
-    onFilterTypesChanged: onFilterTypesChanged
+    filtersModule.init(onFilterChanged);
   };
-
-  filtersModule.init(window.map);
 
   init();
 })();
