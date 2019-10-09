@@ -43,7 +43,7 @@
     EMPTY: '0'
   };
 
-  var TypesValues = {
+  var TypeValue = {
     ANY: {
       text: 'Любой тип жилья',
       value: 'any'
@@ -128,7 +128,7 @@
 
   window.data = {
     Types: TYPES,
-    TypesValues: TypesValues,
+    TypeValue: TypeValue,
     Times: TIMES,
     Room: Room,
     Capacity: Capacity,
