@@ -44,10 +44,6 @@
   };
 
   var TypeValue = {
-    ANY: {
-      text: 'Любой тип жилья',
-      value: 'any'
-    },
     PALACE: {
       text: 'Дворец',
       value: 'palace'
@@ -66,9 +62,24 @@
     }
   };
 
+  var Price = {
+    LOW: {
+      min: null,
+      max: 10000
+    },
+    MIDDLE: {
+      min: 10000,
+      max: 50000
+    },
+    HIGH: {
+      min: 50000,
+      max: null
+    }
+  };
+
   var Feature = {
     WIFI: 'wifi',
-    DISWASHER: 'dishwasher',
+    DISHWASHER: 'dishwasher',
     PARKING: 'parking',
     WASHER: 'washer',
     ELEVATOR: 'elevator',
@@ -134,6 +145,7 @@
     Capacity: Capacity,
     Feature: Feature,
     getMokePins: getMokePins,
-    Features: FEATURES
+    Features: FEATURES,
+    Price: Price
   };
 })();
