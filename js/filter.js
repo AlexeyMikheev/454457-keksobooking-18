@@ -58,28 +58,30 @@
       checkedProperties: []
     };
 
+    var addFilterComparerPropertyBinded = addFilterComparerProperty.bind(null, filterComparer);
+
     if (typeFilter.value !== ANY_FILTER_VALUE) {
-      addFilterComparerProperty(filterComparer, 'type', typeFilter.value, compareEqual);
+      addFilterComparerPropertyBinded('type', typeFilter.value, compareEqual);
     }
 
     if (priceFilter.value !== ANY_FILTER_VALUE) {
       var priceCompareValue = dataModule.Price[priceFilter.value.toUpperCase()];
-      addFilterComparerProperty(filterComparer, 'price', priceCompareValue, compareRange);
+      addFilterComparerPropertyBinded('price', priceCompareValue, compareRange);
 
     }
 
     if (roomsFilter.value !== ANY_FILTER_VALUE) {
       var roomsCompareValue = parseInt(roomsFilter.value, 10);
-      addFilterComparerProperty(filterComparer, 'rooms', roomsCompareValue, compareEqual);
+      addFilterComparerPropertyBinded('rooms', roomsCompareValue, compareEqual);
     }
 
     if (guestsFilter.value !== ANY_FILTER_VALUE) {
       var guestsCompareValue = parseInt(guestsFilter.value, 10);
-      addFilterComparerProperty(filterComparer, 'guests', guestsCompareValue, compareEqual);
+      addFilterComparerPropertyBinded('guests', guestsCompareValue, compareEqual);
     }
 
     if (features.length > 0) {
-      addFilterComparerProperty(filterComparer, 'features', features, compareArray);
+      addFilterComparerPropertyBinded('features', features, compareArray);
     }
 
     return filterComparer.checkedProperties.length ? filterComparer : null;
