@@ -35,7 +35,7 @@
   var getComparedArray = function (filter, pin, typeOfFilter) {
 
     var filtredItems = filter[typeOfFilter].value.filter(function (leftValue) {
-      return pin[typeOfFilter].includes(leftValue)
+      return pin[typeOfFilter].includes(leftValue);
     });
 
     return filtredItems.length === filter[typeOfFilter].value.length;
