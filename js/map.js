@@ -290,7 +290,7 @@
     }, onLoadError);
   };
 
-  var filtred = function (comparer, offer) {
+  var getFiltred = function (comparer, offer) {
     var checkedProperties = comparer.checkedProperties;
 
     var checkedPropertiesCounter = 0;
@@ -313,7 +313,7 @@
 
     if (filterComparer) {
       var filtredPins = mapPinItems.filter(function (pin) {
-        return filtred(filterComparer, pin.offer);
+        return getFiltred(filterComparer, pin.offer);
       });
 
       mapFiltredPinItems = filtredPins;

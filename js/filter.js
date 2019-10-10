@@ -15,42 +15,39 @@
   var featureFilters = mapFilters.querySelectorAll('.map__checkbox');
   var features = [];
 
-  var compareEqual = function (filter, pin, propertyName) {
-    return filter[propertyName].value === pin[propertyName];
+  var getComparedEqual = function (filter, pin, typeOfFilter) {
+    return filter[typeOfFilter].value === pin[typeOfFilter];
   };
 
-  var compareRange = function (filter, pin, propertyName) {
-    var range = filter[propertyName].value;
-    var value = pin[propertyName];
+  var getComparedRange = function (filter, pin, typeOfFilter) {
+    var range = filter[typeOfFilter].value;
+    var value = pin[typeOfFilter];
 
-    if (range.min === null) {
+    if (!range.min) {
       return value <= range.max;
-    } else if (range.max === null) {
+    } else if (!range.max) {
       return value >= range.min;
     }
 
     return range.min < value && value < range.max;
   };
 
-  var compareArray = function (filter, pin, propertyName) {
-    var includesCounter = 0;
-    filter[propertyName].value.forEach(function (leftValue) {
-      if (pin[propertyName].includes(leftValue)) {
-        includesCounter++;
-      }
+  var getComparedArray = function (filter, pin, typeOfFilter) {
+
+    var filtredItems = filter[typeOfFilter].value.filter(function (leftValue) {
+      return pin[typeOfFilter].includes(leftValue)
     });
 
-    return includesCounter === filter[propertyName].value.length;
+    return filtredItems.length === filter[typeOfFilter].value.length;
   };
 
-
-  var addFilterComparerProperty = function (filterComparer, propertyName, compareValue, compareFn) {
-    filterComparer[propertyName] = {
-      value: compareValue,
-      compare: compareFn
+  var addFilterComparerProperty = function (filterComparer, typeOfFilter, filterValue, cb) {
+    filterComparer[typeOfFilter] = {
+      value: filterValue,
+      compare: cb
     };
 
-    filterComparer.checkedProperties.push(propertyName);
+    filterComparer.checkedProperties.push(typeOfFilter);
   };
 
   var getFilterComparer = function () {
@@ -61,27 +58,27 @@
     var addFilterComparerPropertyBinded = addFilterComparerProperty.bind(null, filterComparer);
 
     if (typeFilter.value !== ANY_FILTER_VALUE) {
-      addFilterComparerPropertyBinded('type', typeFilter.value, compareEqual);
+      addFilterComparerPropertyBinded('type', typeFilter.value, getComparedEqual);
     }
 
     if (priceFilter.value !== ANY_FILTER_VALUE) {
       var priceCompareValue = dataModule.Price[priceFilter.value.toUpperCase()];
-      addFilterComparerPropertyBinded('price', priceCompareValue, compareRange);
+      addFilterComparerPropertyBinded('price', priceCompareValue, getComparedRange);
 
     }
 
     if (roomsFilter.value !== ANY_FILTER_VALUE) {
       var roomsCompareValue = parseInt(roomsFilter.value, 10);
-      addFilterComparerPropertyBinded('rooms', roomsCompareValue, compareEqual);
+      addFilterComparerPropertyBinded('rooms', roomsCompareValue, getComparedEqual);
     }
 
     if (guestsFilter.value !== ANY_FILTER_VALUE) {
       var guestsCompareValue = parseInt(guestsFilter.value, 10);
-      addFilterComparerPropertyBinded('guests', guestsCompareValue, compareEqual);
+      addFilterComparerPropertyBinded('guests', guestsCompareValue, getComparedEqual);
     }
 
     if (features.length > 0) {
-      addFilterComparerPropertyBinded('features', features, compareArray);
+      addFilterComparerPropertyBinded('features', features, getComparedArray);
     }
 
     return filterComparer.checkedProperties.length ? filterComparer : null;
@@ -99,12 +96,12 @@
 
   var init = function (cb) {
     mapFilters.addEventListener('change', function (evt) {
-      var args = {
+      var options = {
         target: evt.target,
         cb: cb
       };
 
-      debounce(onMapFiltersChange, args);
+      debounce(onMapFiltersChange, options);
     });
   };
 
