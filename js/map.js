@@ -7,15 +7,14 @@
   var MIN_ADDRESS_Y = 130;
   var MAX_ADDRESS_Y = 630;
 
-  var MAX_PINS_COUNT = 5;
+  var MAX_PINS_COUNT = 6;
 
   var backendModule = window.backend;
   var pinModule = window.pin;
-  var dataModule = window.data;
   var cardModule = window.card;
   var formModule = window.form;
   var notificationModule = window.notification;
-  var filtersModule = window.filters;
+  var filterModule = window.filter;
 
   var isOfferCardOpened = false;
 
@@ -291,14 +290,26 @@
     }, onLoadError);
   };
 
-  var applayFilters = function () {
-    var houseType = filtersModule.getHouseType();
-
-    var filtredPins = mapPinItems.filter(function (pin) {
-      return houseType === dataModule.TypeValue.ANY.value ? true : pin.offer.type === houseType;
+  var getFiltred = function (comparer, offer) {
+    var filtredProperties = comparer.checkedProperties.filter(function (propertyName) {
+      return comparer[propertyName].compare(comparer, offer, propertyName);
     });
 
-    mapFiltredPinItems = filtredPins;
+    return filtredProperties.length === comparer.checkedProperties.length;
+  };
+
+  var applayFilters = function () {
+    var filterComparer = filterModule.getFilterComparer();
+
+    mapFiltredPinItems = mapPinItems;
+
+    if (filterComparer) {
+      var filtredPins = mapPinItems.filter(function (pin) {
+        return getFiltred(filterComparer, pin.offer);
+      });
+
+      mapFiltredPinItems = filtredPins;
+    }
 
     hideOfferCard();
     renderPins();
@@ -317,7 +328,7 @@
 
     formModule.init(onSaveFormSuccess, onSaveFormError);
 
-    filtersModule.init(applayFilters);
+    filterModule.init(applayFilters);
   };
 
   init();
