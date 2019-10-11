@@ -33,7 +33,6 @@
   };
 
   var getComparedArray = function (filter, pin, typeOfFilter) {
-
     var filtredItems = filter[typeOfFilter].value.filter(function (leftValue) {
       return pin[typeOfFilter].includes(leftValue);
     });
@@ -64,7 +63,6 @@
     if (priceFilter.value !== ANY_FILTER_VALUE) {
       var priceCompareValue = dataModule.Price[priceFilter.value.toUpperCase()];
       addFilterComparerPropertyBinded('price', priceCompareValue, getComparedRange);
-
     }
 
     if (roomsFilter.value !== ANY_FILTER_VALUE) {
@@ -77,7 +75,7 @@
       addFilterComparerPropertyBinded('guests', guestsCompareValue, getComparedEqual);
     }
 
-    if (features.length > 0) {
+    if (features.length) {
       addFilterComparerPropertyBinded('features', features, getComparedArray);
     }
 
