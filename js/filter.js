@@ -85,13 +85,11 @@
   };
 
   var fillCheckedFeatures = function () {
-    features = [];
-    for (var i = 0; i < featureFilters.length; i++) {
-      var featureFilter = featureFilters[i];
-      if (featureFilter.checked) {
-        features.push(featureFilter.value);
-      }
-    }
+    features = Array.from(featureFilters).filter(function (featureFilter) {
+      return featureFilter.checked;
+    }).map(function (featureFilterChecked) {
+      return featureFilterChecked.value;
+    });
   };
 
   var init = function (cb) {
