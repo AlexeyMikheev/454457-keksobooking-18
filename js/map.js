@@ -291,19 +291,11 @@
   };
 
   var getFiltred = function (comparer, offer) {
-    var checkedProperties = comparer.checkedProperties;
+    var filtredProperties = comparer.checkedProperties.filter(function (propertyName) {
+      return comparer[propertyName].compare(comparer, offer, propertyName);
+    });
 
-    var checkedPropertiesCounter = 0;
-
-    for (var i = 0; i < checkedProperties.length; i++) {
-      var propertyName = checkedProperties[i];
-
-      if (comparer[propertyName].compare(comparer, offer, propertyName)) {
-        checkedPropertiesCounter++;
-      }
-    }
-
-    return checkedPropertiesCounter === comparer.checkedProperties.length;
+    return filtredProperties.length === comparer.checkedProperties.length;
   };
 
   var applayFilters = function () {
