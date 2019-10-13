@@ -2,8 +2,8 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var MAP_IMAGES_KEY = 'avatar';
-  var MAP_FORM_IMAGES_KEY = 'images';
+  var MAP_AVATAR_KEY = 'avatar';
+  var MAP_IMAGES_KEY = 'images';
 
   var dataModule = window.data;
   var backEndModule = window.backend;
@@ -30,15 +30,20 @@
   var adFormRoomNumber = document.querySelector('.ad-form #room_number');
   var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
 
-  var mapImages = [];
-  var mapPictureUploader = adForm.querySelector('input[type=file].ad-form-header__input');
-  var mapPictureDropArea = adForm.querySelector('.ad-form-header__drop-zone');
-  var mapPicture = adForm.querySelector('.ad-form-header__preview img');
+  var mapAvatarData = null;
+  var mapAvatarUploader = adForm.querySelector('input[type=file].ad-form-header__input');
+  var mapavatarDropArea = adForm.querySelector('.ad-form-header__drop-zone');
+  var mapAvatar = adForm.querySelector('.ad-form-header__preview img');
+  var mapAvatarImgUrl = mapAvatar.src;
 
-  var mapFormImages = [];
-  var pictureUploader = adForm.querySelector('input[type=file].ad-form__input');
-  var pictureDropArea = adForm.querySelector('.ad-form__drop-zone');
-  var picture = adForm.querySelector('.ad-form__photo');
+  var mapImagesData = [];
+  var getCheckMaxImages = function () {
+    return mapImagesData.length < 10;
+  };
+  var imagesUploader = adForm.querySelector('input[type=file].ad-form__input');
+  var imagesDropArea = adForm.querySelector('.ad-form__drop-zone');
+  var imagesContainer = adForm.querySelector('.ad-form__photo-container');
+  var formImage = adForm.querySelector('.ad-form__photo');
 
   var validateAdFormTitle = function () {
     var message = '';
@@ -177,14 +182,47 @@
 
       if (adForm.checkValidity()) {
         var formData = new FormData(adForm);
+        if (formData.has(MAP_AVATAR_KEY)) {
+          formData.delete(MAP_AVATAR_KEY);
+        }
+
+        if (formData.has(MAP_IMAGES_KEY)) {
+          formData.delete(MAP_IMAGES_KEY);
+        }
+
+        if (mapAvatarData) {
+          formData.append(MAP_AVATAR_KEY, mapAvatarData);
+        }
+
+        if (mapImagesData.length) {
+          mapImagesData.forEach(function (image) {
+            formData.append(MAP_IMAGES_KEY, image);
+          });
+        }
         backEndModule.save(formData, onSuccess, onError);
       }
     });
+    adForm.addEventListener('reset', function () {
+      mapAvatar.src = mapAvatarImgUrl;
+
+      var firstImages = imagesContainer.querySelector('div.ad-form__photo:nth-child(2)');
+      firstImages.style.backgroundImage = '';
+
+      var images = imagesContainer.querySelectorAll('div.ad-form__photo:not(:nth-child(2))');
+      Array.from(images).forEach(function (image) {
+        image.remove();
+      });
+
+      mapAvatarData = null;
+      mapImagesData = [];
+    });
   };
 
-  var initPictureEvents = function (uploader, dropAread, pictureLoadCb) {
+  var initPictureEvents = function (uploader, dropAread, cb) {
     uploader.addEventListener('change', function () {
-      uploadPreview(uploader.files[0], pictureLoadCb);
+      if (getCheckMaxImages()) {
+        uploadPreview(uploader.files[0], cb);
+      }
     });
 
     function highlight() {
@@ -209,18 +247,29 @@
     });
 
     dragDropHoverEvents.forEach(function (eventName) {
-      dropAread.addEventListener(eventName, highlight, false);
+      dropAread.addEventListener(eventName, function () {
+        if (getCheckMaxImages()) {
+          highlight();
+        }
+      }, false);
     });
 
     dragDropLeaveEvents.forEach(function (eventName) {
-      dropAread.addEventListener(eventName, unhighlight, false);
+      dropAread.addEventListener(eventName, function () {
+        if (getCheckMaxImages()) {
+          unhighlight();
+        }
+      }, false);
     });
 
     dropAread.addEventListener('drop', function (evt) {
-      unhighlight();
+      if (getCheckMaxImages()) {
+        unhighlight();
 
-      var files = evt.dataTransfer.files;
-      uploadPreview(files[0], pictureLoadCb);
+        Array.from(evt.dataTransfer.files).forEach(function (file) {
+          uploadPreview(file, cb);
+        });
+      }
     }, false);
   };
 
@@ -250,14 +299,23 @@
     validateAdFormPrice();
     checkAdFormTimes(adFormTimeIn);
     initFormEvents(onSaveSuccess, onSaveError);
-    initPictureEvents(mapPictureUploader, mapPictureDropArea, function (imageData) {
-      mapPicture.src = imageData;
-      mapImages = [imageData];
+    initPictureEvents(mapAvatarUploader, mapavatarDropArea, function (imageData) {
+      mapAvatar.src = imageData;
+      mapAvatarData = imageData;
     });
-    initPictureEvents(pictureUploader, pictureDropArea, function (imageData) {
-      picture.style.backgroundImage = 'url(' + imageData + ')';
-      picture.style.backgroundSize = 'cover';
-      mapFormImages = [imageData];
+    initPictureEvents(imagesUploader, imagesDropArea, function (imageData) {
+
+      var picturePreview = formImage;
+
+      if (mapImagesData.length) {
+        picturePreview = formImage.cloneNode(true);
+        imagesContainer.appendChild(picturePreview);
+      }
+
+      picturePreview.style.backgroundImage = 'url(' + imageData + ')';
+      picturePreview.style.backgroundSize = 'cover';
+
+      mapImagesData.push(imageData);
     });
   };
 
