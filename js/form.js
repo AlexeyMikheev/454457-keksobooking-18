@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var MAP_IMAGES_KEY = 'avatar';
+  var MAP_FORM_IMAGES_KEY = 'images';
+
   var dataModule = window.data;
   var backEndModule = window.backend;
 
@@ -25,6 +29,16 @@
   var adFormTimeOut = adForm.querySelector('.ad-form #timeout');
   var adFormRoomNumber = document.querySelector('.ad-form #room_number');
   var adFormCapacityOptions = adFormCapacity.querySelectorAll('option');
+
+  var mapImages = [];
+  var mapPictureUploader = adForm.querySelector('input[type=file].ad-form-header__input');
+  var mapPictureDropArea = adForm.querySelector('.ad-form-header__drop-zone');
+  var mapPicture = adForm.querySelector('.ad-form-header__preview img');
+
+  var mapFormImages = [];
+  var pictureUploader = adForm.querySelector('input[type=file].ad-form__input');
+  var pictureDropArea = adForm.querySelector('.ad-form__drop-zone');
+  var picture = adForm.querySelector('.ad-form__photo');
 
   var validateAdFormTitle = function () {
     var message = '';
@@ -162,9 +176,72 @@
       validateaAFormCapacity();
 
       if (adForm.checkValidity()) {
-        backEndModule.save(new FormData(adForm), onSuccess, onError);
+        var formData = new FormData(adForm);
+        backEndModule.save(formData, onSuccess, onError);
       }
     });
+  };
+
+  var initPictureEvents = function (uploader, dropAread, pictureLoadCb) {
+    uploader.addEventListener('change', function () {
+      uploadPreview(uploader.files[0], pictureLoadCb);
+    });
+
+    function highlight() {
+      dropAread.style.color = 'red';
+      dropAread.style.borderColor = 'red';
+    }
+
+    function unhighlight() {
+      dropAread.style.color = '';
+      dropAread.style.borderColor = '';
+    }
+
+    var dragDropEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
+    var dragDropHoverEvents = ['dragenter', 'dragover'];
+    var dragDropLeaveEvents = ['dragleave', 'drop'];
+
+    dragDropEvents.forEach(function (eventName) {
+      dropAread.addEventListener(eventName, function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+      }, false);
+    });
+
+    dragDropHoverEvents.forEach(function (eventName) {
+      dropAread.addEventListener(eventName, highlight, false);
+    });
+
+    dragDropLeaveEvents.forEach(function (eventName) {
+      dropAread.addEventListener(eventName, unhighlight, false);
+    });
+
+    dropAread.addEventListener('drop', function (evt) {
+      unhighlight();
+
+      var files = evt.dataTransfer.files;
+      uploadPreview(files[0], pictureLoadCb);
+    }, false);
+  };
+
+  var uploadPreview = function (file, cd) {
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        if (cd) {
+          cd(reader.result);
+        }
+      });
+
+      reader.readAsDataURL(file);
+    }
   };
 
   var init = function (onSaveSuccess, onSaveError) {
@@ -173,6 +250,15 @@
     validateAdFormPrice();
     checkAdFormTimes(adFormTimeIn);
     initFormEvents(onSaveSuccess, onSaveError);
+    initPictureEvents(mapPictureUploader, mapPictureDropArea, function (imageData) {
+      mapPicture.src = imageData;
+      mapImages = [imageData];
+    });
+    initPictureEvents(pictureUploader, pictureDropArea, function (imageData) {
+      picture.style.backgroundImage = 'url(' + imageData + ')';
+      picture.style.backgroundSize = 'cover';
+      mapFormImages = [imageData];
+    });
   };
 
   window.form = {
