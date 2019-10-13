@@ -218,21 +218,28 @@
     });
   };
 
-  var initPictureEvents = function (uploader, dropAread, cb) {
+  var initPictureEvents = function (options) {
+    var uploader = options.uploader;
+    var dropArea = options.dropArea;
+    var cb = options.cb;
+    var takeFirst = options.takeFirst;
+
     uploader.addEventListener('change', function () {
-      if (getCheckMaxImages()) {
+      if (takeFirst) {
+        uploadPreview(uploader.files[0], cb);
+      } else if (getCheckMaxImages()) {
         uploadPreview(uploader.files[0], cb);
       }
     });
 
     function highlight() {
-      dropAread.style.color = 'red';
-      dropAread.style.borderColor = 'red';
+      dropArea.style.color = '#ff5635';
+      dropArea.style.borderColor = '#ff5635';
     }
 
     function unhighlight() {
-      dropAread.style.color = '';
-      dropAread.style.borderColor = '';
+      dropArea.style.color = '';
+      dropArea.style.borderColor = '';
     }
 
     var dragDropEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
@@ -240,14 +247,14 @@
     var dragDropLeaveEvents = ['dragleave', 'drop'];
 
     dragDropEvents.forEach(function (eventName) {
-      dropAread.addEventListener(eventName, function (evt) {
+      dropArea.addEventListener(eventName, function (evt) {
         evt.preventDefault();
         evt.stopPropagation();
       }, false);
     });
 
     dragDropHoverEvents.forEach(function (eventName) {
-      dropAread.addEventListener(eventName, function () {
+      dropArea.addEventListener(eventName, function () {
         if (getCheckMaxImages()) {
           highlight();
         }
@@ -255,15 +262,17 @@
     });
 
     dragDropLeaveEvents.forEach(function (eventName) {
-      dropAread.addEventListener(eventName, function () {
+      dropArea.addEventListener(eventName, function () {
         if (getCheckMaxImages()) {
           unhighlight();
         }
       }, false);
     });
 
-    dropAread.addEventListener('drop', function (evt) {
-      if (getCheckMaxImages()) {
+    dropArea.addEventListener('drop', function (evt) {
+      if (takeFirst) {
+        uploadPreview(evt.dataTransfer.files[0], cb);
+      } else if (getCheckMaxImages()) {
         unhighlight();
 
         Array.from(evt.dataTransfer.files).forEach(function (file) {
@@ -273,7 +282,7 @@
     }, false);
   };
 
-  var uploadPreview = function (file, cd) {
+  var uploadPreview = function (file, cb) {
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -284,8 +293,8 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        if (cd) {
-          cd(reader.result);
+        if (cb) {
+          cb(reader.result);
         }
       });
 
@@ -299,24 +308,39 @@
     validateAdFormPrice();
     checkAdFormTimes(adFormTimeIn);
     initFormEvents(onSaveSuccess, onSaveError);
-    initPictureEvents(mapAvatarUploader, mapavatarDropArea, function (imageData) {
-      mapAvatar.src = imageData;
-      mapAvatarData = imageData;
-    });
-    initPictureEvents(imagesUploader, imagesDropArea, function (imageData) {
 
-      var picturePreview = formImage;
+    var avatarOpts = {
+      uploader: mapAvatarUploader,
+      dropArea: mapavatarDropArea,
+      cb: function (imageData) {
+        mapAvatar.src = imageData;
+        mapAvatarData = imageData;
+      },
+      takeFirst: true
+    };
 
-      if (mapImagesData.length) {
-        picturePreview = formImage.cloneNode(true);
-        imagesContainer.appendChild(picturePreview);
-      }
+    initPictureEvents(avatarOpts);
 
-      picturePreview.style.backgroundImage = 'url(' + imageData + ')';
-      picturePreview.style.backgroundSize = 'cover';
+    var imagesOpts = {
+      uploader: imagesUploader,
+      dropArea: imagesDropArea,
+      cb: function (imageData) {
+        var picturePreview = formImage;
 
-      mapImagesData.push(imageData);
-    });
+        if (mapImagesData.length) {
+          picturePreview = formImage.cloneNode(true);
+          imagesContainer.appendChild(picturePreview);
+        }
+
+        picturePreview.style.backgroundImage = 'url(' + imageData + ')';
+        picturePreview.style.backgroundSize = 'cover';
+
+        mapImagesData.push(imageData);
+      },
+      takeFirst: false
+    };
+
+    initPictureEvents(imagesOpts);
   };
 
   window.form = {
