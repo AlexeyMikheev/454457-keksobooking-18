@@ -210,13 +210,15 @@
     adForm.addEventListener('reset', function () {
       mapAvatar.src = mapAvatarImgUrl;
 
-      var firstImages = imagesContainer.querySelector('div.ad-form__photo:nth-child(2)');
-      firstImages.style.backgroundImage = '';
-
-      var images = imagesContainer.querySelectorAll('div.ad-form__photo:not(:nth-child(2))');
-      Array.from(images).forEach(function (image) {
-        image.remove();
-      });
+      var images = imagesContainer.querySelectorAll('.ad-form__photo');
+      for (var i = images.length - 1; i >= 0; i--) {
+        var image = images[i];
+        if (!i) {
+          image.style.backgroundImage = '';
+        } else {
+          image.remove();
+        }
+      }
 
       mapAvatarData = null;
       mapImagesData = [];
