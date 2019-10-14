@@ -2,7 +2,6 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
   var MAX_IMAGES_COUNT = 10;
 
   var FormDataImageKey = {
