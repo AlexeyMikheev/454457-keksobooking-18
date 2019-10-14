@@ -5,7 +5,7 @@
 
   var MAX_IMAGES_COUNT = 10;
 
-  var FormDataImageKeys = {
+  var FormDataImageKey = {
     AVATAR: 'avatar',
     IMAGES: 'images'
   };
@@ -187,21 +187,21 @@
 
       if (adForm.checkValidity()) {
         var formData = new FormData(adForm);
-        if (formData.has(FormDataImageKeys.AVATAR)) {
-          formData.delete(FormDataImageKeys.AVATAR);
+        if (formData.has(FormDataImageKey.AVATAR)) {
+          formData.delete(FormDataImageKey.AVATAR);
         }
 
-        if (formData.has(FormDataImageKeys.IMAGES)) {
-          formData.delete(FormDataImageKeys.IMAGES);
+        if (formData.has(FormDataImageKey.IMAGES)) {
+          formData.delete(FormDataImageKey.IMAGES);
         }
 
         if (mapAvatarData) {
-          formData.append(FormDataImageKeys.AVATAR, mapAvatarData);
+          formData.append(FormDataImageKey.AVATAR, mapAvatarData);
         }
 
         if (mapImagesData.length) {
           mapImagesData.forEach(function (image) {
-            formData.append(FormDataImageKeys.IMAGES, image);
+            formData.append(FormDataImageKey.IMAGES, image);
           });
         }
         backEndModule.save(formData, onSuccess, onError);
