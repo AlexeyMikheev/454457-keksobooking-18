@@ -2,8 +2,13 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var MAP_AVATAR_KEY = 'avatar';
-  var MAP_IMAGES_KEY = 'images';
+
+  var MAX_IMAGES_COUNT = 10;
+
+  var FormDataImageKeys = {
+    AVATAR: 'avatar',
+    IMAGES: 'images'
+  };
 
   var dataModule = window.data;
   var backEndModule = window.backend;
@@ -32,13 +37,13 @@
 
   var mapAvatarData = null;
   var mapAvatarUploader = adForm.querySelector('input[type=file].ad-form-header__input');
-  var mapavatarDropArea = adForm.querySelector('.ad-form-header__drop-zone');
+  var mapAvatarDropArea = adForm.querySelector('.ad-form-header__drop-zone');
   var mapAvatar = adForm.querySelector('.ad-form-header__preview img');
   var mapAvatarImgUrl = mapAvatar.src;
 
   var mapImagesData = [];
   var getCheckMaxImages = function () {
-    return mapImagesData.length < 10;
+    return mapImagesData.length < MAX_IMAGES_COUNT;
   };
   var imagesUploader = adForm.querySelector('input[type=file].ad-form__input');
   var imagesDropArea = adForm.querySelector('.ad-form__drop-zone');
@@ -182,21 +187,21 @@
 
       if (adForm.checkValidity()) {
         var formData = new FormData(adForm);
-        if (formData.has(MAP_AVATAR_KEY)) {
-          formData.delete(MAP_AVATAR_KEY);
+        if (formData.has(FormDataImageKeys.AVATAR)) {
+          formData.delete(FormDataImageKeys.AVATAR);
         }
 
-        if (formData.has(MAP_IMAGES_KEY)) {
-          formData.delete(MAP_IMAGES_KEY);
+        if (formData.has(FormDataImageKeys.IMAGES)) {
+          formData.delete(FormDataImageKeys.IMAGES);
         }
 
         if (mapAvatarData) {
-          formData.append(MAP_AVATAR_KEY, mapAvatarData);
+          formData.append(FormDataImageKeys.AVATAR, mapAvatarData);
         }
 
         if (mapImagesData.length) {
           mapImagesData.forEach(function (image) {
-            formData.append(MAP_IMAGES_KEY, image);
+            formData.append(FormDataImageKeys.IMAGES, image);
           });
         }
         backEndModule.save(formData, onSuccess, onError);
@@ -218,17 +223,19 @@
     });
   };
 
-  var initPictureEvents = function (options) {
-    var uploader = options.uploader;
-    var dropArea = options.dropArea;
-    var cb = options.cb;
-    var takeFirst = options.takeFirst;
+  var initPictureEvents = function (uploader, dropArea, cb) {
+
+    var dragDropEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
+    var dragDropHoverEvents = ['dragenter', 'dragover'];
+    var dragDropLeaveEvents = ['dragleave', 'drop'];
 
     uploader.addEventListener('change', function () {
-      if (takeFirst) {
-        uploadPreview(uploader.files[0], cb);
-      } else if (getCheckMaxImages()) {
-        uploadPreview(uploader.files[0], cb);
+      if (uploader.files.length) {
+        if (uploader === mapAvatarUploader) {
+          uploadPreview(uploader.files[0], cb);
+        } else if (getCheckMaxImages()) {
+          uploadPreview(uploader.files[0], cb);
+        }
       }
     });
 
@@ -241,10 +248,6 @@
       dropArea.style.color = '';
       dropArea.style.borderColor = '';
     }
-
-    var dragDropEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
-    var dragDropHoverEvents = ['dragenter', 'dragover'];
-    var dragDropLeaveEvents = ['dragleave', 'drop'];
 
     dragDropEvents.forEach(function (eventName) {
       dropArea.addEventListener(eventName, function (evt) {
@@ -270,14 +273,16 @@
     });
 
     dropArea.addEventListener('drop', function (evt) {
-      if (takeFirst) {
-        uploadPreview(evt.dataTransfer.files[0], cb);
-      } else if (getCheckMaxImages()) {
-        unhighlight();
+      if (evt.dataTransfer.files.length) {
+        if (uploader === mapAvatarUploader) {
+          uploadPreview(evt.dataTransfer.files[0], cb);
+        } else if (getCheckMaxImages()) {
+          unhighlight();
 
-        Array.from(evt.dataTransfer.files).forEach(function (file) {
-          uploadPreview(file, cb);
-        });
+          Array.from(evt.dataTransfer.files).forEach(function (file) {
+            uploadPreview(file, cb);
+          });
+        }
       }
     }, false);
   };
@@ -309,38 +314,24 @@
     checkAdFormTimes(adFormTimeIn);
     initFormEvents(onSaveSuccess, onSaveError);
 
-    var avatarOpts = {
-      uploader: mapAvatarUploader,
-      dropArea: mapavatarDropArea,
-      cb: function (imageData) {
-        mapAvatar.src = imageData;
-        mapAvatarData = imageData;
-      },
-      takeFirst: true
-    };
+    initPictureEvents(mapAvatarUploader, mapAvatarDropArea, function (imageData) {
+      mapAvatar.src = imageData;
+      mapAvatarData = imageData;
+    }, true);
 
-    initPictureEvents(avatarOpts);
+    initPictureEvents(imagesUploader, imagesDropArea, function (imageData) {
+      var picturePreview = formImage;
 
-    var imagesOpts = {
-      uploader: imagesUploader,
-      dropArea: imagesDropArea,
-      cb: function (imageData) {
-        var picturePreview = formImage;
+      if (mapImagesData.length) {
+        picturePreview = formImage.cloneNode(true);
+        imagesContainer.appendChild(picturePreview);
+      }
 
-        if (mapImagesData.length) {
-          picturePreview = formImage.cloneNode(true);
-          imagesContainer.appendChild(picturePreview);
-        }
+      picturePreview.style.backgroundImage = 'url(' + imageData + ')';
+      picturePreview.style.backgroundSize = 'cover';
 
-        picturePreview.style.backgroundImage = 'url(' + imageData + ')';
-        picturePreview.style.backgroundSize = 'cover';
-
-        mapImagesData.push(imageData);
-      },
-      takeFirst: false
-    };
-
-    initPictureEvents(imagesOpts);
+      mapImagesData.push(imageData);
+    }, false);
   };
 
   window.form = {
