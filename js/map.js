@@ -115,9 +115,9 @@
 
   var clearPins = function () {
     var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = pins.length - 1; i >= 0; i--) {
-      pins[i].remove();
-    }
+    Array.from(pins).forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   var addElementsAttribute = function (parent, selector, attrName, value) {
