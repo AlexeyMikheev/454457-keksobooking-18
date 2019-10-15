@@ -159,17 +159,22 @@
     addElementsAttribute(mapFiltersForm, 'fieldset', 'disabled', true);
   };
 
-  var getAddress = function (left, top, width, height) {
-    var addressX = Math.round(left + (width / 2));
-    var addressY = Math.round(top + (height + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
-    return {
-      x: addressX,
-      y: addressY
-    };
+  var AddressRange = function (top, right, bottom, left) {
+    this.minX = left;
+    this.maxX = right;
+    this.minY = top;
+    this.maxY = bottom;
   };
 
-  var addressValidate = function (address) {
-    return address.x >= minMapX && address.x <= maxMapX && address.y >= MIN_ADDRESS_Y && address.y <= MAX_ADDRESS_Y;
+  var addressRange = new AddressRange(MIN_ADDRESS_Y, maxMapX, MAX_ADDRESS_Y, minMapX);
+
+  var Address = function (left, top, width, height) {
+    this.x = Math.round(left + (width / 2));
+    this.y = Math.round(top + (height + (MAP_PIN_MAIN_AFTER_HEIGHT / 2)));
+  };
+
+  Address.prototype.getValid = function (range) {
+    return this.x >= range.minX && this.x <= range.maxX && this.y >= range.minY && this.y <= range.maxY;
   };
 
   var setMapPinMainDefault = function () {
@@ -177,12 +182,12 @@
       var positionTop = mapPinMainDefaultCoords.positionTop;
       var positionLeft = mapPinMainDefaultCoords.positionLeft;
 
-      var address = getAddress(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
+      var address = new Address(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
 
       mapPinMain.style.top = positionTop + 'px';
       mapPinMain.style.left = positionLeft + 'px';
 
-      if (addressValidate(address)) {
+      if (address.getValid(addressRange)) {
         formModule.setAddress(address.x + ' ' + address.y);
       }
     }
@@ -224,9 +229,9 @@
         var positionTop = mapPinMain.offsetTop - shift.y;
         var positionLeft = mapPinMain.offsetLeft - shift.x;
 
-        var address = getAddress(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
+        var address = new Address(positionLeft, positionTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
 
-        if (addressValidate(address)) {
+        if (address.getValid(addressRange)) {
           formModule.setAddress(address.x + ' ' + address.y);
         } else {
           positionTop = mapPinMain.offsetTop;
@@ -241,8 +246,8 @@
       var onMouseUp = function (upEvt) {
         upEvt.preventDefault();
 
-        var address = getAddress(mapPinMain.offsetLeft, mapPinMain.offsetTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
-        if (addressValidate(address)) {
+        var address = new Address(mapPinMain.offsetLeft, mapPinMain.offsetTop, mapPinMain.offsetWidth, mapPinMain.offsetHeight);
+        if (address.getValid(addressRange)) {
           formModule.setAddress(address.x + ' ' + address.y);
         }
 
@@ -292,7 +297,7 @@
 
   var getFiltred = function (comparer, offer) {
     var filtredProperties = comparer.checkedProperties.filter(function (propertyName) {
-      return comparer[propertyName].compare(comparer, offer, propertyName);
+      return comparer.compare(propertyName, offer);
     });
 
     return filtredProperties.length === comparer.checkedProperties.length;
