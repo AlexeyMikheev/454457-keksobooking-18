@@ -12,6 +12,13 @@
     errorMessage = errorTemplate.querySelector('.error').cloneNode(true);
     var errorButton = errorMessage.querySelector('.error__button');
 
+    var errorDescription = document.createElement('div');
+    errorDescription.style.color = '#ffffff';
+    errorDescription.textContent = errorMessageText;
+    errorMessage.appendChild(errorDescription);
+
+    errorMessage.insertBefore(errorDescription, errorButton);
+
     errorButton.addEventListener('click', function (evt) {
       evt.preventDefault();
       if (errorMessage) {

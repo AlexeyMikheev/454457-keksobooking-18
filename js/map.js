@@ -122,16 +122,16 @@
 
   var addElementsAttribute = function (parent, selector, attrName, value) {
     var childItems = parent.querySelectorAll(selector);
-    for (var i = 0; i < childItems.length; i++) {
-      childItems[i].setAttribute(attrName, value);
-    }
+    Array.from(childItems).forEach(function (childItem) {
+      childItem.setAttribute(attrName, value);
+    });
   };
 
   var removeElementsAttribute = function (parent, selector, attrName) {
     var childItems = parent.querySelectorAll(selector);
-    for (var i = 0; i < childItems.length; i++) {
-      childItems[i].removeAttribute(attrName);
-    }
+    Array.from(childItems).forEach(function (childItem) {
+      childItem.removeAttribute(attrName);
+    });
   };
 
   var enableMap = function () {
@@ -198,6 +198,7 @@
 
       if (!isMapEnabled) {
         enableMap();
+        backendModule.load(loadPins, onLoadError);
       }
 
       var startCoords = {
@@ -320,8 +321,6 @@
   };
 
   var init = function () {
-    backendModule.load(loadPins, onLoadError);
-
     disableMap();
 
     initMapPinMainEvents();

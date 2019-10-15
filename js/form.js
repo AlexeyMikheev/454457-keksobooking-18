@@ -65,14 +65,12 @@
 
   var checkAdFormRoomNumberValues = function () {
     var roomNumber = adFormRoomNumber.value;
-    var optionCapacityOption = null;
     var optionCapacityValue = null;
 
-    for (var i = 0; i < adFormCapacityOptions.length; i++) {
-      optionCapacityOption = adFormCapacityOptions[i];
-      optionCapacityValue = optionCapacityOption.value;
-      optionCapacityOption.disabled = !RoomsCapacity[roomNumber].includes(optionCapacityValue);
-    }
+    Array.from(adFormCapacityOptions).forEach(function (adFormOptionCapacityOption) {
+      optionCapacityValue = adFormOptionCapacityOption.value;
+      adFormOptionCapacityOption.disabled = !RoomsCapacity[roomNumber].includes(optionCapacityValue);
+    });
   };
 
   var validateaAFormCapacity = function () {
@@ -210,14 +208,16 @@
       mapAvatar.src = mapAvatarImgUrl;
 
       var images = imagesContainer.querySelectorAll('.ad-form__photo');
-      for (var i = images.length - 1; i >= 0; i--) {
-        var image = images[i];
-        if (!i) {
+
+      var skipFirstIndex = true;
+      Array.from(images).forEach(function (image) {
+        if (skipFirstIndex) {
           image.style.backgroundImage = '';
+          skipFirstIndex = false;
         } else {
           image.remove();
         }
-      }
+      });
 
       mapAvatarData = null;
       mapImagesData = [];
@@ -240,15 +240,15 @@
       }
     });
 
-    function highlight() {
+    var highlight = function () {
       dropArea.style.color = '#ff5635';
       dropArea.style.borderColor = '#ff5635';
-    }
+    };
 
-    function unhighlight() {
+    var unhighlight = function () {
       dropArea.style.color = '';
       dropArea.style.borderColor = '';
-    }
+    };
 
     dragDropEvents.forEach(function (eventName) {
       dropArea.addEventListener(eventName, function (evt) {
