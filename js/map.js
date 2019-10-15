@@ -111,7 +111,6 @@
 
       mapPins.appendChild(fragment);
     }
-
   };
 
   var clearPins = function () {
