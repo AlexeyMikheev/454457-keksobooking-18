@@ -8,9 +8,9 @@
   var messageOverlayClickHandler = null;
   var mainNode = document.querySelector('main');
 
-  var initMouseClick = function (messageOverlay) {
+  var initMessageOverlayMouseClick = function (messageOverlay) {
     messageOverlayClickHandler = messageOverlay.addEventListener('click', function () {
-      hideMessage();
+      hideActiveMessage();
     });
   };
 
@@ -37,7 +37,7 @@
     });
 
     mainNode.insertAdjacentElement('afterbegin', errorMessage);
-    initMouseClick(errorMessage);
+    initMessageOverlayMouseClick(errorMessage);
   };
 
   var hideErrorMessage = function () {
@@ -47,7 +47,7 @@
     }
   };
 
-  var hideMessage = function () {
+  var hideActiveMessage = function () {
     if (successMessage || errorMessage) {
       document.removeEventListener('click', messageOverlayClickHandler);
       messageOverlayClickHandler = null;
@@ -62,17 +62,16 @@
     }
   };
 
-
   var showSuccessMessage = function () {
     successMessage = successTemplate.querySelector('.success').cloneNode(true);
     mainNode.insertAdjacentElement('afterbegin', successMessage);
-    initMouseClick(successMessage);
+    initMessageOverlayMouseClick(successMessage);
   };
 
   window.notification = {
     showErrorMessage: showErrorMessage,
     hideErrorMessage: hideErrorMessage,
     showSuccessMessage: showSuccessMessage,
-    hideMessage: hideMessage
+    hideActiveMessage: hideActiveMessage
   };
 })();

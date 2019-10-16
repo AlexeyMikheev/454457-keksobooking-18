@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png', 'svg'];
   var MAX_IMAGES_COUNT = 10;
 
   var FormDataImageKey = {
@@ -19,10 +19,10 @@
   RoomsCapacity[dataModule.Room.ONEHUNDRED] = [dataModule.Capacity.EMPTY];
 
   var MinTypesPrice = {};
-  MinTypesPrice[dataModule.TypeValue.BUNGALO.value] = 0;
-  MinTypesPrice[dataModule.TypeValue.FLAT.value] = 1000;
-  MinTypesPrice[dataModule.TypeValue.HOUSE.value] = 5000;
-  MinTypesPrice[dataModule.TypeValue.PALACE.value] = 10000;
+  MinTypesPrice[dataModule.Type.BUNGALO.value] = 0;
+  MinTypesPrice[dataModule.Type.FLAT.value] = 1000;
+  MinTypesPrice[dataModule.Type.HOUSE.value] = 5000;
+  MinTypesPrice[dataModule.Type.PALACE.value] = 10000;
 
   var adForm = document.querySelector('.ad-form');
   var adFormReset = document.querySelector('.ad-form__reset');
@@ -111,16 +111,16 @@
     var message = '';
     if (priceValue < minPriceValue) {
       switch (typeValue) {
-        case dataModule.TypeValue.BUNGALO.value:
+        case dataModule.Type.BUNGALO.value:
           message = 'Выберите не менее ' + minPriceValue;
           break;
-        case dataModule.TypeValue.FLAT.value:
+        case dataModule.Type.FLAT.value:
           message = 'Выберите не менее ' + minPriceValue;
           break;
-        case dataModule.TypeValue.HOUSE.value:
+        case dataModule.Type.HOUSE.value:
           message = 'Выберите не менее ' + minPriceValue;
           break;
-        case dataModule.TypeValue.PALACE.value:
+        case dataModule.Type.PALACE.value:
           message = 'Выберите не менее ' + minPriceValue;
           break;
       }
@@ -208,7 +208,6 @@
         backEndModule.save(formData, onSuccess, onError);
       }
     });
-
   };
 
   var initResetEvent = function (onReset) {
@@ -226,11 +225,9 @@
     mapAvatar.src = mapAvatarImgUrl;
     var images = imagesContainer.querySelectorAll('.ad-form__photo');
 
-    var skipFirstIndex = true;
-    Array.from(images).forEach(function (image) {
-      if (skipFirstIndex) {
+    Array.from(images).forEach(function (image, index) {
+      if (!index) {
         image.style.backgroundImage = '';
-        skipFirstIndex = false;
       } else {
         image.remove();
       }
@@ -238,11 +235,9 @@
 
     mapAvatarData = null;
     mapImagesData = [];
-
   };
 
   var initPictureEvents = function (uploader, dropArea, cb) {
-
     var dragDropEvents = ['dragenter', 'dragover', 'dragleave', 'drop'];
     var dragDropHoverEvents = ['dragenter', 'dragover'];
     var dragDropLeaveEvents = ['dragleave', 'drop'];
@@ -307,20 +302,17 @@
 
   var uploadPreview = function (file, cb) {
     var fileName = file.name.toLowerCase();
-
     var matches = FILE_TYPES.some(function (it) {
       return fileName.endsWith(it);
     });
 
     if (matches) {
       var reader = new FileReader();
-
       reader.addEventListener('load', function () {
         if (cb) {
           cb(reader.result);
         }
       });
-
       reader.readAsDataURL(file);
     }
   };

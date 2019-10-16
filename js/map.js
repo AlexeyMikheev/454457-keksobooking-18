@@ -105,10 +105,8 @@
 
       for (var i = 0; i < countItems; i++) {
         var pin = pinModule.createPin(mapFiltredPinItems[i], i, pinTemplate.cloneNode(true));
-
         fragment.appendChild(pin);
       }
-
       mapPins.appendChild(fragment);
     }
   };
@@ -263,7 +261,7 @@
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === ESC_KEY) {
         hideOfferCard();
-        notificationModule.hideMessage();
+        notificationModule.hideActiveMessage();
       }
     });
   };

@@ -1,13 +1,24 @@
 'use strict';
 
 (function () {
+
+  var Feature = {
+    WIFI: 'wifi',
+    DISHWASHER: 'dishwasher',
+    PARKING: 'parking',
+    WASHER: 'washer',
+    ELEVATOR: 'elevator',
+    CONDITIONER: 'conditioner'
+  };
+
   var FEATURES = [
-    'wifi',
-    'dishwasher',
-    'parking',
-    'washer',
-    'elevator',
-    'conditioner'
+    Feature.WIFI,
+    Feature.DISHWASHER,
+    Feature.PARKING,
+    Feature.WASHER,
+    Feature.WASHER,
+    Feature.ELEVATOR,
+    Feature.CONDITIONER
   ];
 
   var Room = {
@@ -24,7 +35,7 @@
     EMPTY: '0'
   };
 
-  var TypeValue = {
+  var Type = {
     PALACE: {
       text: 'Дворец',
       value: 'palace'
@@ -58,17 +69,8 @@
     }
   };
 
-  var Feature = {
-    WIFI: 'wifi',
-    DISHWASHER: 'dishwasher',
-    PARKING: 'parking',
-    WASHER: 'washer',
-    ELEVATOR: 'elevator',
-    CONDITIONER: 'conditioner'
-  };
-
   window.data = {
-    TypeValue: TypeValue,
+    Type: Type,
     Room: Room,
     Capacity: Capacity,
     Feature: Feature,

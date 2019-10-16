@@ -9,7 +9,7 @@
     mapCard.querySelector('.popup__title').textContent = offer.title;
     mapCard.querySelector('.popup__text--address').textContent = offer.address;
     mapCard.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-    mapCard.querySelector('.popup__type').textContent = dataModule.TypeValue[offer.type.toUpperCase()].text;
+    mapCard.querySelector('.popup__type').textContent = dataModule.Type[offer.type.toUpperCase()].text;
     mapCard.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout;
 
