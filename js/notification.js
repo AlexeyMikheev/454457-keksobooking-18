@@ -5,8 +5,14 @@
   var successTemplate = document.querySelector('#success').content;
   var errorMessage = null;
   var successMessage = null;
-  var documentClickHandler = null;
+  var messageOverlayClickHandler = null;
   var mainNode = document.querySelector('main');
+
+  var initMouseClick = function (messageOverlay) {
+    messageOverlayClickHandler = messageOverlay.addEventListener('click', function () {
+      hideMessage();
+    });
+  };
 
   var showErrorMessage = function (errorMessageText, onCloseCallback) {
     errorMessage = errorTemplate.querySelector('.error').cloneNode(true);
@@ -29,7 +35,9 @@
         onCloseCallback();
       }
     });
+
     mainNode.insertAdjacentElement('afterbegin', errorMessage);
+    initMouseClick(errorMessage);
   };
 
   var hideErrorMessage = function () {
@@ -39,29 +47,32 @@
     }
   };
 
-  var showSuccessMessage = function () {
-    successMessage = successTemplate.querySelector('.success').cloneNode(true);
-    mainNode.insertAdjacentElement('afterbegin', successMessage);
-    documentClickHandler = document.addEventListener('click', function () {
-      if (successMessage) {
-        hideSuccessMessage();
-      }
-    });
-  };
-
-  var hideSuccessMessage = function () {
+  var hideMessage = function () {
+    if (successMessage || errorMessage) {
+      document.removeEventListener('click', messageOverlayClickHandler);
+      messageOverlayClickHandler = null;
+    }
     if (successMessage) {
       successMessage.remove();
       successMessage = null;
-      document.removeEventListener('click', documentClickHandler);
-      documentClickHandler = null;
     }
+    if (errorMessage) {
+      errorMessage.remove();
+      errorMessage = null;
+    }
+  };
+
+
+  var showSuccessMessage = function () {
+    successMessage = successTemplate.querySelector('.success').cloneNode(true);
+    mainNode.insertAdjacentElement('afterbegin', successMessage);
+    initMouseClick(successMessage);
   };
 
   window.notification = {
     showErrorMessage: showErrorMessage,
     hideErrorMessage: hideErrorMessage,
     showSuccessMessage: showSuccessMessage,
-    hideSuccessMessage: hideSuccessMessage
+    hideMessage: hideMessage
   };
 })();

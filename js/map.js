@@ -263,8 +263,7 @@
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === ESC_KEY) {
         hideOfferCard();
-        notificationModule.hideErrorMessage();
-        notificationModule.hideSuccessMessage();
+        notificationModule.hideMessage();
       }
     });
   };
@@ -275,17 +274,25 @@
     });
   };
 
-  var onSaveFormSuccess = function () {
-    adForm.reset();
+  var setMapDefault = function () {
+    filterModule.resetForm();
     clearPins();
     hideOfferCard();
-
-    notificationModule.showSuccessMessage();
+    disableMap();
     setMapPinMainDefault();
   };
 
+  var onSaveFormSuccess = function () {
+    formModule.resetForm();
+    setMapDefault();
+
+    notificationModule.showSuccessMessage();
+  };
+
   var onSaveFormError = function (errorMessage) {
-    notificationModule.showErrorMessage(errorMessage);
+    notificationModule.showErrorMessage(errorMessage, function () {
+      notificationModule.hideErrorMessage();
+    });
   };
 
   var loadPins = function () {
@@ -329,7 +336,7 @@
 
     addPinClickEvent();
 
-    formModule.init(onSaveFormSuccess, onSaveFormError);
+    formModule.init(onSaveFormSuccess, onSaveFormError, setMapDefault);
 
     filterModule.init(applayFilters);
   };

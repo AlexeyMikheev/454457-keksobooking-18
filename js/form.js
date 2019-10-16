@@ -25,6 +25,7 @@
   MinTypesPrice[dataModule.TypeValue.PALACE.value] = 10000;
 
   var adForm = document.querySelector('.ad-form');
+  var adFormReset = document.querySelector('.ad-form__reset');
   var adFormCapacity = adForm.querySelector('.ad-form #capacity');
   var adFormTitle = adForm.querySelector('.ad-form #title');
   var adFormType = adForm.querySelector('.ad-form #type');
@@ -104,20 +105,23 @@
     var priceValue = +adFormPrice.value;
     var minPriceValue = MinTypesPrice[typeValue];
 
+    adFormPrice.min = minPriceValue;
+    adFormPrice.placeholder = minPriceValue;
+
     var message = '';
     if (priceValue < minPriceValue) {
       switch (typeValue) {
         case dataModule.TypeValue.BUNGALO.value:
-          message = 'Выберите не менее 0';
+          message = 'Выберите не менее ' + minPriceValue;
           break;
         case dataModule.TypeValue.FLAT.value:
-          message = 'Выберите не менее 1000';
+          message = 'Выберите не менее ' + minPriceValue;
           break;
         case dataModule.TypeValue.HOUSE.value:
-          message = 'Выберите не менее 5000';
+          message = 'Выберите не менее ' + minPriceValue;
           break;
         case dataModule.TypeValue.PALACE.value:
-          message = 'Выберите не менее 10000';
+          message = 'Выберите не менее ' + minPriceValue;
           break;
       }
     }
@@ -204,24 +208,37 @@
         backEndModule.save(formData, onSuccess, onError);
       }
     });
-    adForm.addEventListener('reset', function () {
-      mapAvatar.src = mapAvatarImgUrl;
 
-      var images = imagesContainer.querySelectorAll('.ad-form__photo');
+  };
 
-      var skipFirstIndex = true;
-      Array.from(images).forEach(function (image) {
-        if (skipFirstIndex) {
-          image.style.backgroundImage = '';
-          skipFirstIndex = false;
-        } else {
-          image.remove();
-        }
-      });
-
-      mapAvatarData = null;
-      mapImagesData = [];
+  var initResetEvent = function (onReset) {
+    adFormReset.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      resetForm();
+      onReset();
     });
+  };
+
+  var resetForm = function () {
+    adForm.reset();
+    validateAdFormPrice();
+
+    mapAvatar.src = mapAvatarImgUrl;
+    var images = imagesContainer.querySelectorAll('.ad-form__photo');
+
+    var skipFirstIndex = true;
+    Array.from(images).forEach(function (image) {
+      if (skipFirstIndex) {
+        image.style.backgroundImage = '';
+        skipFirstIndex = false;
+      } else {
+        image.remove();
+      }
+    });
+
+    mapAvatarData = null;
+    mapImagesData = [];
+
   };
 
   var initPictureEvents = function (uploader, dropArea, cb) {
@@ -308,12 +325,13 @@
     }
   };
 
-  var init = function (onSaveSuccess, onSaveError) {
+  var init = function (onSaveSuccess, onSaveError, onReset) {
     initValidations();
     checkAdFormRoomNumberValues();
     validateAdFormPrice();
     checkAdFormTimes(adFormTimeIn);
     initFormEvents(onSaveSuccess, onSaveError);
+    initResetEvent(onReset);
 
     initPictureEvents(mapAvatarUploader, mapAvatarDropArea, function (imageData) {
       mapAvatar.src = imageData;
@@ -337,6 +355,7 @@
 
   window.form = {
     init: init,
-    setAddress: setAddress
+    setAddress: setAddress,
+    resetForm: resetForm
   };
 })();
